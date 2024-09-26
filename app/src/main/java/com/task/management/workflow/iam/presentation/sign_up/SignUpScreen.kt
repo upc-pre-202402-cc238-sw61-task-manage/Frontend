@@ -6,20 +6,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel) {
     val user = viewModel.user.value
+    val roles = listOf("ROLE_USER", "ROLE_ADMIN")
+    var selectedRole by remember { mutableStateOf(roles[0]) }
+    // Aquí seleccionamos el rol del usuario
+    val expanded = remember { mutableStateOf(false) }
+
 
     Scaffold() { paddingValues ->
         Column(
@@ -47,15 +62,39 @@ fun SignUpScreen(viewModel: SignUpViewModel) {
                     .align(Alignment.CenterHorizontally)
             )
 
-            // Here we select the role of the user
-            OutlinedTextField(
-                value = viewModel.roles.collectAsState().value,
-                onValueChange = { viewModel.onRolesChanged(it) },
-                label = { Text("Role") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            )
+
+            ExposedDropdownMenuBox(
+                expanded = expanded.value,
+                onExpandedChange = { expanded.value = !expanded.value }
+            ) {
+                    OutlinedTextField(
+                        value = selectedRole,
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Role") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
+                    )
+                DropdownMenu(
+                        expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    roles.forEach { role ->
+                        DropdownMenuItem(
+                            text = { Text(role) },
+                            onClick = {
+                                selectedRole = role
+                                viewModel.onRolesChanged(selectedRole)
+                                    expanded.value = false
+                            }
+                        )
+                    }
+                }
+            }
 
             OutlinedButton(
                 onClick = { viewModel.signUp() },
