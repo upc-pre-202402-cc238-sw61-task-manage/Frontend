@@ -14,7 +14,7 @@ interface TaskService {
     suspend fun getTask(@Path("taskId")taskId: Long): Response<TaskDto>
 
     @GET("/api/v1/tasks/")
-    suspend fun getAllTasks(): Response<List<TaskResponseDto>>
+    suspend fun getAllTasks(): Response<TaskResponseDto>
 
     @POST("/api/v1/tasks/")
     suspend fun postTask(task: Task)

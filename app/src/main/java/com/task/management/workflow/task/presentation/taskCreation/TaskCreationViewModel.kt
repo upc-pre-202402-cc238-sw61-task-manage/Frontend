@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.task.management.workflow.common.Resource
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
@@ -66,6 +67,18 @@ class TaskCreationViewModel(private val repository: TaskRepository): ViewModel()
             _projectId.longValue = newLongValue
         }
 
+    }
+
+    fun getAllTasks(){
+        _state.value = TaskCreationState(isLoading = true)
+        viewModelScope.launch {
+            val result = repository.getTasks()
+            if(result is Resource.Success) {
+                _state.value = TaskCreationState(tasks = result.data)
+            } else {
+                _state.value = TaskCreationState(error = result.message?: "An error occurred")
+            }
+        }
     }
 
     fun createTask(id:Long, task: Task){

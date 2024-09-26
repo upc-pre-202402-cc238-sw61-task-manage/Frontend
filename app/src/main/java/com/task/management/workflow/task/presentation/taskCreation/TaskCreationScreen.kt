@@ -1,7 +1,6 @@
 package com.task.management.workflow.task.presentation.taskCreation
 
 import android.app.DatePickerDialog
-import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.task.management.workflow.task.domain.Task
-import java.util.Locale
 
 @Composable
 fun TaskScreen(viewModel: TaskCreationViewModel){
@@ -141,6 +139,13 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
             ) {
                 Text("Create Task")
             }
+            Button(
+                onClick = {
+                    viewModel.getAllTasks()
+                }
+            ){
+                Text("Show all Tasks")
+            }
         }
 
         state.tasks?.let { tasks ->
@@ -151,14 +156,23 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
                             .fillMaxWidth()
                             .padding(4.dp)
                     ) {
+
                         TaskItem(task)
+
                     }
                 }
             }
-            if (state.isLoading) {
-                CircularProgressIndicator()
-            }
+        } ?: run {
+            Text("No tasks available")
         }
+
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        }
+        if(state.error.isNotEmpty()){
+            Text(state.error)
+        }
+
     }
 }
 
@@ -172,8 +186,8 @@ fun TaskItem(task: Task) {
             Text(task.name)
             Text(task.description)
             Text(task.dueDate)
-            Text(task.userID.toString())
-            Text(task.projectID.toString())
+            Text("User ID: ${task.userID}")
+            Text("Project ID: ${task.projectID}")
         }
     }
 }
