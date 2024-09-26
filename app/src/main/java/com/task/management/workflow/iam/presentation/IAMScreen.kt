@@ -39,6 +39,7 @@ fun IAMScreen (viewModel: IAMViewModel){
                 CircularProgressIndicator()
             } else {
                 user.data?.let {
+                    // Here we can redirect to another screen
                     Text("Welcome ${it.username}")
                 }
                 Text(user.error)
