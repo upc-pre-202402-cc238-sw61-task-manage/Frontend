@@ -13,6 +13,7 @@ glide = "2.3.8"
 room = "2.6.1"
 ksp = "1.9.0-1.0.13"
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

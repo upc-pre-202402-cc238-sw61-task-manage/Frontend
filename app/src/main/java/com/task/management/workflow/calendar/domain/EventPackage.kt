@@ -9,3 +9,10 @@ data class EventPackage(
     val day: Int,
     val month: Int,
     val year: Int)
+{
+    fun formattedDate(): String {
+        val formattedDay = day.toString().padStart(2, '0')
+        val formattedMonth = month.toString().padStart(2, '0')
+        return "$formattedDay/$formattedMonth/$year"
+    }
+}

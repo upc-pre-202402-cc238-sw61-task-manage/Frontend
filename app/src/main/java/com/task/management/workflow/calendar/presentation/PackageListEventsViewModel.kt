@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.calendar.data.repository.PackageRepository
+import com.task.management.workflow.calendar.domain.CreateEventRequest
 import com.task.management.workflow.calendar.domain.EventPackage
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
@@ -36,4 +37,22 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
         }
 
     }
+
+    fun addEvent(title: String, description: String, day: Int, month: Int, year: Int) {
+        _state.value = UIState(isLoading = true)
+        viewModelScope.launch {
+            //Modificar el projectId dependiendo de el proyecto del usuario
+            val newEvent = CreateEventRequest(0, _userId.value, title, description, day, month, year)
+
+            // Llamar al repositorio para añadir el evento
+            val result = repository.addEvent(newEvent)
+
+            if (result is Resource.Success) {
+                getPackages()
+            } else {
+                _state.value = UIState(error = result.message ?: "An error occurred")
+            }
+        }
+    }
+
 }
