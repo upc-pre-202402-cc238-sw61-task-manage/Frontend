@@ -1,4 +1,4 @@
-package com.task.management.workflow.iam.domain
+package com.task.management.workflow.iam.domain.model
 
 data class User(
     val id: Long,
