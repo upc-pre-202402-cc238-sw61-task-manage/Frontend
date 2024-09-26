@@ -9,9 +9,9 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface IAMService {
-    @POST("api/v1/authenfication/signin")
+    @POST("api/v1/authentication/sign-in")
     suspend fun signIn(@Body signInRequest: SignInRequest): Response<SignInResponse>
 
-    @POST("api/v1/authenfication/signup")
+    @POST("api/v1/authentication/sign-up")
     suspend fun signUp(@Body signUpRequest: SignUpRequest): Response<SignUpResponse>
 }

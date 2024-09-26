@@ -1,15 +1,16 @@
 package com.task.management.workflow.iam.data.repository
 
 import com.task.management.workflow.iam.data.remote.IAMService
+import com.task.management.workflow.common.Resource
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInResponse
 import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
 import com.task.management.workflow.iam.data.remote.signup.SignUpResponse
-import com.task.management.workflow.common.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class IAMRepository (private val service: IAMService){
+
     /**
      * This function is used to sign in a user
      * @param signInRequest: SignInRequest
@@ -30,9 +31,9 @@ class IAMRepository (private val service: IAMService){
         }
     }
     /**
-    * This function is used to sign up a user
-    * @param signUpRequest: SignUpRequest
-    * @return Resource<SignUpResponse>
+     * This function is used to sign up a user
+     * @param signUpRequest: SignUpRequest
+     * @return Resource<SignUpResponse>
      */
     suspend fun signUp( signUpRequest: SignUpRequest): Resource<SignUpResponse> = withContext(Dispatchers.IO) {
         try {

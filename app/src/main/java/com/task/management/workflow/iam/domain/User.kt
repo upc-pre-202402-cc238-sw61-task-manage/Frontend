@@ -6,3 +6,4 @@ data class User(
     val password: String,
     val token: String,
 )
+
