@@ -10,6 +10,7 @@ import retrofit2.http.Path
 
 
 interface PackageService {
+
     @GET("api/v1/events/user/{userId}")
     suspend fun getEventsbyUser(@Path("userId") userId: Int): Response<List<PackageDto>>
 

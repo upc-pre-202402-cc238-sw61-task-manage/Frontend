@@ -68,7 +68,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.glide)
@@ -76,4 +75,5 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+
 }

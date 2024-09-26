@@ -1,5 +1,6 @@
 package com.task.management.workflow.calendar.presentation
 
+import android.icu.util.Calendar
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,8 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
     private val _userId = mutableStateOf(0)
     val userId: State<Int> get() = _userId
 
+    val calendar = Calendar.getInstance()
+
     fun onUserIdChanged(id: Int){
         _userId.value = id
         getPackages()
@@ -37,7 +40,6 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
         }
 
     }
-
     fun addEvent(title: String, description: String, day: Int, month: Int, year: Int) {
         _state.value = UIState(isLoading = true)
         viewModelScope.launch {
@@ -54,5 +56,4 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
             }
         }
     }
-
 }

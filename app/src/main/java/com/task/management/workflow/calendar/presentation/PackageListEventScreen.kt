@@ -1,5 +1,6 @@
 package com.task.management.workflow.calendar.presentation
 
+import android.widget.CalendarView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -20,12 +21,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.task.management.workflow.calendar.data.remote.PackageService
 import com.task.management.workflow.calendar.data.repository.PackageRepository
 import com.task.management.workflow.common.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 @Composable
 fun PackageListEventScreen(viewModel: PackageListEventsViewModel) {
@@ -55,17 +56,29 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel) {
                 },
                 label = { Text("User ID") }
             )
-
-            // Añadir un espacio entre el TextField y la lista
             Spacer(modifier = Modifier.height(16.dp))
 
+            AndroidView(
+                factory = { context ->
+                    CalendarView(context).apply {
+
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                update = { calendarView ->
+                    state.data?.let { eventList ->
+                    }
+                }
+            )
+            Text(text = "Lista de eventos", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = _color)
             when {
                 state.isLoading -> {
                     CircularProgressIndicator()
                 }
-
                 state.data != null -> {
-                    Text(text = "Lista de eventos", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = _color)
+
                     LazyColumn(
                         modifier = Modifier
                             .padding(horizontal = 20.dp)
@@ -88,7 +101,6 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel) {
                         }
                     }
                 }
-
                 state.error != null -> {
                     Text(text = "Error: ${state.error}")
                 }
@@ -106,6 +118,8 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel) {
         )
     }
 }
+
+
 @Preview
 @Composable
 fun PackageListScreenPreview(){
@@ -115,3 +129,4 @@ fun PackageListScreenPreview(){
     val viewModel = PackageListEventsViewModel(repository)
     PackageListEventScreen(viewModel)
 }
+

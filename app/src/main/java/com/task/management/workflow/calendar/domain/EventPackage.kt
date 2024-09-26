@@ -15,4 +15,5 @@ data class EventPackage(
         val formattedMonth = month.toString().padStart(2, '0')
         return "$formattedDay/$formattedMonth/$year"
     }
+
 }
