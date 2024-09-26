@@ -1,9 +1,9 @@
-package com.task.management.workflow.IAM.data.remote
+package com.task.management.workflow.iam.data.remote
 
-import com.task.management.workflow.IAM.data.remote.signin.SignInRequest
-import com.task.management.workflow.IAM.data.remote.signin.SignInResponse
-import com.task.management.workflow.IAM.data.remote.signup.SignUpRequest
-import com.task.management.workflow.IAM.data.remote.signup.SignUpResponse
+import com.task.management.workflow.iam.data.remote.signin.SignInRequest
+import com.task.management.workflow.iam.data.remote.signin.SignInResponse
+import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
+import com.task.management.workflow.iam.data.remote.signup.SignUpResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

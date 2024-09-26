@@ -1,4 +1,4 @@
-package com.task.management.workflow.IAM.presentation
+package com.task.management.workflow.iam.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.task.management.workflow.IAM.data.remote.IAMService
-import com.task.management.workflow.IAM.data.repository.IAMRepository
+import com.task.management.workflow.iam.data.remote.IAMService
+import com.task.management.workflow.iam.data.repository.IAMRepository
 import com.task.management.workflow.common.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

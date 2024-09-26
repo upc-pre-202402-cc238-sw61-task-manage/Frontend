@@ -1,4 +1,4 @@
-package com.task.management.workflow.IAM.data.remote.signup
+package com.task.management.workflow.iam.data.remote.signup
 
 data class SignUpRequest( 
     val username: String,

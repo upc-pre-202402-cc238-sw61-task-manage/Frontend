@@ -1,12 +1,12 @@
-package com.task.management.workflow.IAM.presentation
+package com.task.management.workflow.iam.presentation
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.task.management.workflow.IAM.data.remote.signin.SignInRequest
-import com.task.management.workflow.IAM.data.repository.IAMRepository
-import com.task.management.workflow.IAM.domain.User
+import com.task.management.workflow.iam.data.remote.signin.SignInRequest
+import com.task.management.workflow.iam.data.repository.IAMRepository
+import com.task.management.workflow.iam.domain.User
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
 import kotlinx.coroutines.flow.MutableStateFlow
