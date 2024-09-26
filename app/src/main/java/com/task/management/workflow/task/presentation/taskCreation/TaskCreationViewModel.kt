@@ -83,12 +83,6 @@ class TaskCreationViewModel(private val repository: TaskRepository): ViewModel()
 
     fun createTask(id:Long, task: Task){
         viewModelScope.launch {
-            if(task.name.isEmpty() || task.description.isEmpty()){
-                return@launch
-            }
-            if (task.description.length > 200 || task.name.length > 40) {
-                return@launch
-            }
             repository.insert(id,task.name,task.description,task.dueDate,task.userID,task.projectID)
         }
     }
