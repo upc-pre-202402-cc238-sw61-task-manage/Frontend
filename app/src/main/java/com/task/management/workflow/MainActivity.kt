@@ -4,18 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.task.management.workflow.calendar.data.remote.PackageService
 import com.task.management.workflow.calendar.data.repository.PackageRepository
+import com.task.management.workflow.calendar.presentation.PackageListEventScreen
 import com.task.management.workflow.calendar.presentation.PackageListEventsViewModel
 import com.task.management.workflow.common.Constants
+import com.task.management.workflow.iam.data.remote.AuthInterceptor
+import com.task.management.workflow.iam.data.remote.IAMService
+import com.task.management.workflow.iam.data.remote.TokenProvider
+import com.task.management.workflow.iam.data.repository.IAMRepository
+import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
+import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
+import com.task.management.workflow.iam.presentation.sign_up.SignUpViewModel
 import com.task.management.workflow.ui.theme.WorkflowTheme
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -24,14 +26,21 @@ class MainActivity : ComponentActivity() {
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor(tokenProvider))
         .build()
+
+    // IAM
     private val service = Retrofit.Builder().baseUrl(Constants.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create()).build().create(IAMService::class.java)
     private val signInViewModel = SignInViewModel(IAMRepository(service, tokenProvider))
     private val signUpViewModel = SignUpViewModel(IAMRepository(service, tokenProvider))
 
-    val calendarViewModel = PackageListEventsViewModel(repository)
 
+    //Calendar
+    private val calendar = Retrofit.Builder().baseUrl(Constants.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create()).build().create(PackageService::class.java)
+    private val packageRepository = PackageRepository(calendar)
+    private val calendarViewModel = PackageListEventsViewModel(PackageRepository(calendar))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,24 +48,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             WorkflowTheme {
                 //SignInScreen(signInViewModel)
-                SignUpScreen(signUpViewModel)
+                //SignUpScreen(signUpViewModel)
+                PackageListEventScreen(calendarViewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WorkflowTheme {
-        Greeting("Android")
     }
 }
