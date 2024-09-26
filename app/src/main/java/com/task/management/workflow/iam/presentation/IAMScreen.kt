@@ -10,12 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import com.task.management.workflow.iam.data.remote.IAMService
-import com.task.management.workflow.common.Constants
-import com.task.management.workflow.iam.data.repository.IAMRepository
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
 fun IAMScreen (viewModel: IAMViewModel){
@@ -23,15 +19,18 @@ fun IAMScreen (viewModel: IAMViewModel){
 
     Scaffold() { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            OutlinedTextField(value = viewModel.username.collectAsState().value, onValueChange = {
-                viewModel.onUsernameChanged(it)
-            })
-            OutlinedTextField(value = viewModel.password.collectAsState().value, onValueChange = {
-                viewModel.onPasswordChanged(it)
-            })
-            OutlinedButton(onClick = {
-                viewModel.signIn()
-            }) {
+            OutlinedTextField(
+                value = viewModel.username.collectAsState().value,
+                onValueChange = { viewModel.onUsernameChanged(it) },
+                label = { Text("Username") }
+            )
+            OutlinedTextField(
+                value = viewModel.password.collectAsState().value,
+                onValueChange = { viewModel.onPasswordChanged(it) },
+                label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation()
+            )
+            OutlinedButton(onClick = { viewModel.signIn() }) {
                 Text("Sign in")
             }
 
@@ -51,10 +50,4 @@ fun IAMScreen (viewModel: IAMViewModel){
 @Preview
 @Composable
 fun IAMScreenPreview() {
-    val retrofit = Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(
-        GsonConverterFactory.create()).build()
-    val service = retrofit.create(IAMService::class.java)
-    val repository = IAMRepository(service)
-    val viewModel = IAMViewModel(repository)
-    IAMScreen(viewModel)
 }
