@@ -1,43 +1,40 @@
+// app/src/main/java/com/task/management/workflow/iam/data/repository/IAMRepository.kt
 package com.task.management.workflow.iam.data.repository
 
-import com.task.management.workflow.iam.data.remote.IAMService
 import com.task.management.workflow.common.Resource
+import com.task.management.workflow.iam.data.remote.IAMService
+import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInResponse
-import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
 import com.task.management.workflow.iam.data.remote.signup.SignUpResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.task.management.workflow.iam.data.remote.TokenProvider
+import retrofit2.Response
 
-class IAMRepository(private val service: IAMService) {
+class IAMRepository(private val service: IAMService, private val tokenProvider: TokenProvider) {
 
-    suspend fun signIn(signInRequest: SignInRequest): Resource<SignInResponse> = withContext(Dispatchers.IO) {
-        try {
+    suspend fun signIn(signInRequest: SignInRequest): Resource<SignInResponse> {
+        return try {
             val response = service.signIn(signInRequest)
-            if (response.isSuccessful) {
-                response.body()?.let { user ->
-                    return@withContext Resource.Success(user)
-                } ?: return@withContext Resource.Error(message = response.message())
-            } else {
-                return@withContext Resource.Error(message = response.message())
-            }
+            handleResponse(response)
         } catch (e: Exception) {
-            return@withContext Resource.Error(message = e.message ?: "An exception occurred")
+            Resource.Error(e.message ?: "An error occurred")
         }
     }
 
-    suspend fun signUp(signUpRequest: SignUpRequest): Resource<SignUpResponse> = withContext(Dispatchers.IO) {
-        try {
+    suspend fun signUp(signUpRequest: SignUpRequest): Resource<SignUpResponse> {
+        return try {
             val response = service.signUp(signUpRequest)
-            if (response.isSuccessful) {
-                response.body()?.let { user ->
-                    return@withContext Resource.Success(user)
-                } ?: return@withContext Resource.Error(message = response.message())
-            } else {
-                return@withContext Resource.Error(message = response.message())
-            }
+            handleResponse(response)
         } catch (e: Exception) {
-            return@withContext Resource.Error(message = e.message ?: "An exception occurred")
+            Resource.Error(e.message ?: "An error occurred")
+        }
+    }
+
+    private fun <T> handleResponse(response: Response<T>): Resource<T> {
+        return if (response.isSuccessful) {
+            Resource.Success(response.body()!!)
+        } else {
+            Resource.Error(response.message())
         }
     }
 }
