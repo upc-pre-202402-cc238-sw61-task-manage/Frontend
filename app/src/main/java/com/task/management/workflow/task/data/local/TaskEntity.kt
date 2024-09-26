@@ -16,7 +16,7 @@ data class TaskEntity(
     @ColumnInfo("task_description")
     val description: String,
     @ColumnInfo("due_date")
-    val dueDate: Date,
+    val dueDate: String,
     @ColumnInfo("assigned_user")
     val userID: Long,
     @ColumnInfo("assigned_project")

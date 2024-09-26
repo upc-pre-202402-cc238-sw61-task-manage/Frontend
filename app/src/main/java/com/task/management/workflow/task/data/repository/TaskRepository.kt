@@ -11,16 +11,16 @@ class TaskRepository(
     private val taskService: TaskService,
     private val taskDao: TaskDao
 ) {
-    suspend fun insert(taskId: Long, name: String, description: String, dueDate: Date, userId: Long, projectId: Long) = withContext(Dispatchers.IO){
+    suspend fun insert(taskId: Long, name: String, description: String, dueDate: String, userId: Long, projectId: Long) = withContext(Dispatchers.IO){
         taskDao.insert(TaskEntity(taskId, name, description, dueDate, userId, projectId))
     }
 
-    suspend fun delete(taskId: Long, name: String, description: String, dueDate: Date, userId: Long, projectId: Long)
+    suspend fun delete(taskId: Long, name: String, description: String, dueDate: String, userId: Long, projectId: Long)
     = withContext(Dispatchers.IO) {
         taskDao.delete(TaskEntity(taskId, name, description, dueDate, userId, projectId))
     }
 
-    suspend fun update(taskId: Long, name: String, description: String, dueDate: Date, userId: Long, projectId: Long) = withContext(Dispatchers.IO) {
+    suspend fun update(taskId: Long, name: String, description: String, dueDate: String, userId: Long, projectId: Long) = withContext(Dispatchers.IO) {
         taskDao.update(TaskEntity(taskId, name, description, dueDate, userId, projectId))
     }
 

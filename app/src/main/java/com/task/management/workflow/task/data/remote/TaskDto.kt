@@ -11,7 +11,7 @@ data class TaskDto(
     @SerializedName("task_description")
     var description: String,
     @SerializedName("due_date")
-    var dueDate: Date,
+    var dueDate: String,
     @SerializedName("user_id")
     var userID: Long,
     @SerializedName("project_id")
