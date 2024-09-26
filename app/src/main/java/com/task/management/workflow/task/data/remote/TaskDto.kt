@@ -1,12 +1,11 @@
 package com.task.management.workflow.task.data.remote
 
 import com.google.gson.annotations.SerializedName
-import com.task.management.workflow.task.domain.Task
 import java.util.Date
 
 data class TaskDto(
     @SerializedName("task_id")
-    val taskId: Int,
+    val taskId: Long,
     @SerializedName("task_name")
     var name: String,
     @SerializedName("task_description")
@@ -14,9 +13,9 @@ data class TaskDto(
     @SerializedName("due_date")
     var dueDate: Date,
     @SerializedName("user_id")
-    var userID: Int,
+    var userID: Long,
     @SerializedName("project_id")
-    val projectID: Int
+    val projectID: Long
 )
 
 

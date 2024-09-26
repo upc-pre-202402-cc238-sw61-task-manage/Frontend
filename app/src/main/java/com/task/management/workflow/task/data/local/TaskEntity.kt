@@ -4,12 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
+import java.util.UUID
 
 @Entity(tableName = "tasks")
 data class TaskEntity(
     @PrimaryKey
     @ColumnInfo("task_id")
-    val taskId: Int,
+    val taskId: Long,
     @ColumnInfo("task_name")
     val name: String,
     @ColumnInfo("task_description")
@@ -17,7 +18,7 @@ data class TaskEntity(
     @ColumnInfo("due_date")
     val dueDate: Date,
     @ColumnInfo("assigned_user")
-    val userID: Int,
+    val userID: Long,
     @ColumnInfo("assigned_project")
-    val projectID: Int
+    val projectID: Long
 )
