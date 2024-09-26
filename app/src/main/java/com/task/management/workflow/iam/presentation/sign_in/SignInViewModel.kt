@@ -1,4 +1,4 @@
-package com.task.management.workflow.iam.presentation
+package com.task.management.workflow.iam.presentation.sign_in
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class IAMViewModel (private val repository: IAMRepository): ViewModel() {
+class SignInViewModel(private val repository: IAMRepository) : ViewModel() {
 
     private val _user = mutableStateOf(UIState<User>())
     val user: State<UIState<User>> get() = _user
@@ -44,16 +44,15 @@ class IAMViewModel (private val repository: IAMRepository): ViewModel() {
                 val user = response.data?.let {
                     User(
                         id = it.id,
-                        username = response.data.username,
+                        username = it.username,
                         password = password,
-                        token = response.data.token
+                        token = it.token
                     )
                 }
                 _user.value = UIState(data = user)
             } else {
-                _user.value = UIState(error = response.message?:"An error occurred")
+                _user.value = UIState(error = response.message ?: "An error occurred")
             }
         }
     }
-
 }
