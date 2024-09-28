@@ -2,6 +2,7 @@ package com.task.management.workflow.calendar.presentation
 
 import android.icu.util.Calendar
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,13 +18,13 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
     private val _state = mutableStateOf(UIState<List<EventPackage>>())
     val state: State<UIState<List<EventPackage>>> get() = _state
 
-    private val _userId = mutableStateOf(0)
+    private val _userId = mutableIntStateOf(1)
     val userId: State<Int> get() = _userId
 
-    val calendar = Calendar.getInstance()
+    val calendar: Calendar = Calendar.getInstance()
 
     fun onUserIdChanged(id: Int){
-        _userId.value = id
+        _userId.intValue = id
         getPackages()
     }
 
@@ -44,7 +45,7 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
         _state.value = UIState(isLoading = true)
         viewModelScope.launch {
             //Modificar el projectId dependiendo de el proyecto del usuario
-            val newEvent = CreateEventRequest(0, _userId.value, title, description, day, month, year)
+            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, day, month, year)
 
             // Llamar al repositorio para añadir el evento
             val result = repository.addEvent(newEvent)

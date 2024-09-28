@@ -3,14 +3,13 @@ package com.task.management.workflow.iam.data.repository
 
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.iam.data.remote.IAMService
-import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInResponse
+import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
 import com.task.management.workflow.iam.data.remote.signup.SignUpResponse
-import com.task.management.workflow.iam.data.remote.TokenProvider
 import retrofit2.Response
 
-class IAMRepository(private val service: IAMService, private val tokenProvider: TokenProvider) {
+class IAMRepository(private val service: IAMService) {
 
     suspend fun signIn(signInRequest: SignInRequest): Resource<SignInResponse> {
         return try {
