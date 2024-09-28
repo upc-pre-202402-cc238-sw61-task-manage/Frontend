@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -57,6 +58,13 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                 },
                 label = { Text("User ID") }
             )
+
+            OutlinedButton(onClick = {
+                navController.navigate("profiles")
+            }) {
+                Icon(imageVector = Icons.Default.Person, contentDescription = "View Profile")
+                Text("View Profile")
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             AndroidView(

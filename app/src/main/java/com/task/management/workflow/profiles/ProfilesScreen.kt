@@ -10,16 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun TeammateView() {
+fun TeammateView(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,6 +40,17 @@ fun TeammateView() {
                 "Task 2 - 12/12/202X"
             )
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedButton(
+            onClick = {
+                navController.navigate("packageList")
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text("Return to calendar", fontWeight = FontWeight.Bold)
+        }
     }
 }
 
@@ -118,5 +131,4 @@ fun TaskItem(task: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewTeammateView() {
-    TeammateView()
 }

@@ -20,6 +20,10 @@ import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpViewModel
+import com.task.management.workflow.profiles.TeammateView
+import com.task.management.workflow.project.data.local.ProjectDao
+import com.task.management.workflow.project.data.remote.ProjectService
+import com.task.management.workflow.project.data.repository.ProjectRepository
 import com.task.management.workflow.ui.theme.WorkflowTheme
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -46,6 +50,11 @@ class MainActivity : ComponentActivity() {
     private val packageRepository = PackageRepository(calendarService)
     private val calendarViewModel = PackageListEventsViewModel(PackageRepository(calendarService))
 
+    // Project
+    private val projectService = Retrofit.Builder().baseUrl(Constants.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create()).build().create(ProjectService::class.java)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,7 +65,8 @@ class MainActivity : ComponentActivity() {
                     composable("signIn") { SignInScreen(signInViewModel, navController) }
                     composable("signUp") { SignUpScreen(signUpViewModel, navController) }
                     composable("packageList") { PackageListEventScreen(calendarViewModel, navController) }
-                    // Add more composable routes as needed
+                    composable("projectCreation") {  }
+                    composable("profiles") { TeammateView(navController) }
                 }
             }
         }

@@ -28,7 +28,4 @@ interface ProjectDao {
 
     @Query("SELECT * FROM projects WHERE project_description = :projectDescription")
     suspend fun getProjectByDescription(projectDescription: String): ProjectEntity?
-
-
-
 }
