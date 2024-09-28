@@ -10,7 +10,7 @@ class AuthInterceptor(private val tokenProvider: TokenProvider) : Interceptor {
         val publicEndpoints =
             listOf("api/v1/authentication/sign-in", "api/v1/authentication/sign-up")
 
-        val isPublicEndpoint = publicEndpoints.any { request.url().encodedPath().contains(it) }
+        val isPublicEndpoint = publicEndpoints.any { request.url.encodedPath.contains(it) }
 
         return if (!isPublicEndpoint) {
             val newRequest = request.newBuilder()
