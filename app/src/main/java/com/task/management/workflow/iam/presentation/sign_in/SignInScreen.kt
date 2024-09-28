@@ -16,12 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @Composable
-fun SignInScreen (viewModel: SignInViewModel){
+fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
     val user = viewModel.user.value
 
-    Scaffold() { paddingValues ->
+    Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -47,12 +48,26 @@ fun SignInScreen (viewModel: SignInViewModel){
                     .align(Alignment.CenterHorizontally)
             )
             OutlinedButton(
-                onClick = { viewModel.signIn() },
+                onClick = {
+                    viewModel.signIn()
+                    navController.navigate("packageList") // Navigate to PackageListEventScreen
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text("Sign in")
+            }
+
+            OutlinedButton(
+                onClick = {
+                    navController.navigate("signUp") // Navigate to SignUpScreen
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text("Not have an account? Sign up")
             }
 
             if (user.isLoading) {

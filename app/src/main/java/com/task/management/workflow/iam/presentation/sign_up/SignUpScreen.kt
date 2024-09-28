@@ -25,10 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel) {
+fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     val user = viewModel.user.value
     val roles = listOf("ROLE_USER", "ROLE_ADMIN")
     var selectedRole by remember { mutableStateOf(roles[0]) }
@@ -103,6 +104,12 @@ fun SignUpScreen(viewModel: SignUpViewModel) {
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text("Sign in")
+            }
+
+            OutlinedButton(modifier = Modifier.align(Alignment.CenterHorizontally), onClick = {
+                navController.navigate("signIn")
+            }) {
+                Text("Already have an account? Sign in")
             }
 
             if (user.isLoading) {

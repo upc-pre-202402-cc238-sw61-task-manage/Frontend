@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.task.management.workflow.calendar.data.remote.PackageService
 import com.task.management.workflow.calendar.data.repository.PackageRepository
 import com.task.management.workflow.calendar.presentation.PackageListEventsViewModel
@@ -41,44 +44,25 @@ class MainActivity : ComponentActivity() {
     private val signInViewModel = SignInViewModel(IAMRepository(service, tokenProvider))
     private val signUpViewModel = SignUpViewModel(IAMRepository(service, tokenProvider))
 
-
-    //Calendar
+    // Calendar
     private val calendar = Retrofit.Builder().baseUrl(Constants.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create()).build().create(PackageService::class.java)
     private val packageRepository = PackageRepository(calendar)
     private val calendarViewModel = PackageListEventsViewModel(PackageRepository(calendar))
 
-
-    //Task
-//    val taskService = Retrofit.Builder()
-//        .baseUrl(Constants.BASE_URL)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .client(okHttpClient)
-//        .build()
-//        .create(TaskService::class.java)
-//
-//    val dao = Room.databaseBuilder(
-//        applicationContext,
-//        TaskDatabase::class.java,
-//        "db-workflow"
-//    )
-//        .build()
-//        .getTaskDao()
-//
-//    val taskViewModel = TaskCreationViewModel(TaskRepository(taskService,dao))
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WorkflowTheme {
-                SignInScreen(signInViewModel)
-                //SignUpScreen(signUpViewModel)
-                //PackageListEventScreen(calendarViewModel)
-
-                // TODO: Fix this
-                //TaskScreen(taskViewModel)
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "signIn") {
+                    composable("signIn") { SignInScreen(signInViewModel, navController) }
+                    composable("signUp") { SignUpScreen(signUpViewModel, navController) }
+                    composable("packageList") { PackageListEventScreen(calendarViewModel, navController) }
+                    // Add more composable routes as needed
+                }
             }
         }
     }

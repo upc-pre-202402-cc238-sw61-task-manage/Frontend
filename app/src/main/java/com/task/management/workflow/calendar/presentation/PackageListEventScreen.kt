@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.task.management.workflow.calendar.data.remote.PackageService
 import com.task.management.workflow.calendar.data.repository.PackageRepository
 import com.task.management.workflow.common.Constants
@@ -29,7 +30,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
-fun PackageListEventScreen(viewModel: PackageListEventsViewModel) {
+fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController: NavController) {
 
     val state = viewModel.state.value
     val userId = viewModel.userId.value
@@ -123,10 +124,5 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel) {
 @Preview
 @Composable
 fun PackageListScreenPreview(){
-    val retrofit = Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build()
-    val service = retrofit.create(PackageService::class.java)
-    val repository = PackageRepository(service)
-    val viewModel = PackageListEventsViewModel(repository)
-    PackageListEventScreen(viewModel)
 }
 
