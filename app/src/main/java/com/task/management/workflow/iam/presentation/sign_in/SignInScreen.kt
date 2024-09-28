@@ -49,8 +49,9 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
             )
             OutlinedButton(
                 onClick = {
-                    viewModel.signIn()
-                    navController.navigate("packageList") // Navigate to PackageListEventScreen
+                    viewModel.signIn().let {
+                        navController.navigate("packageList") // Navigate to PackageListEventScreen
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
