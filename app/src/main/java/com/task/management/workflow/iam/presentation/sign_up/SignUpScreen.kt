@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +33,9 @@ import androidx.navigation.NavController
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     val user = viewModel.user.value
     val roles = listOf("ROLE_USER", "ROLE_ADMIN")
-    var selectedRole by remember { mutableStateOf(roles[0]) }
-    // Aquí seleccionamos el rol del usuario
+    var selectedRole = viewModel.roles.collectAsState().value
+    selectedRole = selectedRole.ifEmpty { roles[0] }
     val expanded = remember { mutableStateOf(false) }
-
 
     Scaffold() { paddingValues ->
         Column(
@@ -114,11 +114,14 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
             if (user.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else if (user.error.isNotEmpty()) {
+                Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 user.data?.let {
-                    Text("Welcome ${it.username}", modifier = Modifier.align(Alignment.CenterHorizontally))
+                    LaunchedEffect(it) {
+                        navController.navigate("packageList")
+                    }
                 }
-                Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
             }
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,9 +50,7 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
             )
             OutlinedButton(
                 onClick = {
-                    viewModel.signIn().let {
-                        navController.navigate("packageList") // Navigate to PackageListEventScreen
-                    }
+                    viewModel.signIn()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,11 +72,14 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
 
             if (user.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else if (user.error.isNotEmpty()) {
+                Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 user.data?.let {
-                    Text("Welcome ${it.username}", modifier = Modifier.align(Alignment.CenterHorizontally))
+                    LaunchedEffect(it) {
+                        navController.navigate("packageList")
+                    }
                 }
-                Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
             }
         }
     }
