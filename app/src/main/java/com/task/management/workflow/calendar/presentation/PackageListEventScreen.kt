@@ -3,53 +3,59 @@ package com.task.management.workflow.calendar.presentation
 import android.widget.CalendarView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import com.task.management.workflow.calendar.data.remote.PackageService
-import com.task.management.workflow.calendar.data.repository.PackageRepository
-import com.task.management.workflow.common.Constants
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.task.management.workflow.calendar.domain.EventPackage
 
 @Composable
 fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController: NavController) {
 
     val state = viewModel.state.value
     val userId = viewModel.userId.value
-    val _color = Color(25, 23, 89)
+    val color = Color(25, 23, 89)
     var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
-    var showDialog by remember { mutableStateOf(false) }
 
-    Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = { showDialog = true }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
+    var showDialogAddEvent by remember { mutableStateOf(false) }
+    var showDialogDeleteEvent by remember { mutableStateOf(false) }
+    var eventToDelete by remember { mutableStateOf<EventPackage?>(null) }
+
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { showDialogAddEvent = true }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
+            }
         }
-    }) { paddingValues: PaddingValues ->
+    ) { paddingValues: PaddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
             TextField(
+                modifier = Modifier.width(80.dp),
                 value = userIdInput,
                 onValueChange = {
                     userIdInput = it
@@ -65,7 +71,6 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                 Icon(imageVector = Icons.Default.Person, contentDescription = "View Profile")
                 Text("View Profile")
             }
-            Spacer(modifier = Modifier.height(16.dp))
 
             AndroidView(
                 factory = { context ->
@@ -75,13 +80,19 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(10.dp),
                 update = { calendarView ->
                     state.data?.let { eventList ->
                     }
                 }
             )
-            Text(text = "Lista de eventos", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = _color)
+            Text(
+                modifier = Modifier.padding(horizontal = 30.dp),
+                text = "Lista de eventos",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
             when {
                 state.isLoading -> {
                     CircularProgressIndicator()
@@ -90,8 +101,8 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
 
                     LazyColumn(
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
-                            .weight(1f) // Para permitir que el LazyColumn ocupe el espacio restante
+                            .padding(horizontal = 30.dp)
+                            .weight(1f)
                     ) {
 
                         items(state.data ?: emptyList()) { event ->
@@ -100,37 +111,59 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                                     .padding(vertical = 8.dp)
                                     .fillMaxWidth()
                             ) {
-                                Text(text = event.title, fontSize = 22.sp, color = _color)
-                                Text(text = event.formattedDate(), color = _color)
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text = event.title, fontSize = 16.sp, color = color, fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    IconButton(onClick = {
+                                        eventToDelete = event
+                                        showDialogDeleteEvent = true}) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Delete,
+                                            tint = Color.Red,
+                                            contentDescription = "Eliminar evento"
+                                        )
+                                    }
+                                }
+                                Text(text = event.title, fontSize = 22.sp, color = color)
+                                Text(text = event.formattedDate(), color = color)
                                 Text(
-                                    text = event.description, fontSize = 18.sp, color = _color,
-                                    modifier = Modifier.padding(bottom = 13.dp)
+                                    text = event.description,
+                                    fontSize = 15.sp,
+                                    color = color,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
                     }
                 }
-                state.error != null -> {
+                state.error.isNotEmpty() -> {
                     Text(text = "Error: ${state.error}")
                 }
             }
         }
     }
 
-    if (showDialog) {
+    if (showDialogAddEvent) {
         AddEventDialog(
-            onDismiss = { showDialog = false },
+            onDismiss = { showDialogAddEvent = false },
             onConfirm = { title, description, day, month, year ->
                 viewModel.addEvent(title, description, day, month, year)
-                showDialog = false
+                showDialogAddEvent = false
             }
         )
     }
+
+    if(showDialogDeleteEvent){
+        DeleteEventDialog(
+            eventTitle = eventToDelete!!.title,
+            onDismiss = { showDialogDeleteEvent = false },
+            onConfirm = {
+                viewModel.removeEvent(eventToDelete!!.id)
+                showDialogDeleteEvent = false
+                eventToDelete = null
+            }
+        )
+    }
+
 }
-
-
-@Preview
-@Composable
-fun PackageListScreenPreview(){
-}
-

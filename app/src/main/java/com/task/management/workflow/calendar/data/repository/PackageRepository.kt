@@ -50,4 +50,17 @@ suspend fun getPackages(userId: Int): Resource<List<EventPackage>> = withContext
             Resource.Error(e.message ?: "An error occurred")
         }
     }
+
+    suspend fun deleteEvent(eventId: Int): Resource<Unit>{
+        return try {
+            val response = service.deleteEvent(eventId)
+            if (response.isSuccessful) {
+                Resource.Success(Unit)
+            } else {
+                Resource.Error(response.message())
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "An error occurred")
+        }
+    }
 }
