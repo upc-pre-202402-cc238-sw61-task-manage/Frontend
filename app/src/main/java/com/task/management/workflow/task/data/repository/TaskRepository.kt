@@ -9,21 +9,60 @@ import com.task.management.workflow.task.data.remote.toTask
 import com.task.management.workflow.task.domain.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 class TaskRepository(
     private val taskService: TaskService,
     private val taskDao: TaskDao
 ) {
-    suspend fun insert(taskId: Long, name: String, description: String, dueDate: String, userId: Long, projectId: Long) = withContext(Dispatchers.IO){
-        taskDao.insert(TaskEntity(taskId, name, description, dueDate, userId, projectId))
+    suspend fun insertLocally(id: Long, task: Task) = withContext(Dispatchers.IO){
+        taskDao.insert(
+            TaskEntity(
+                id,
+                task.name,
+                task.description,
+                task.dueDate,
+                task.userId,
+                task.projectId
+            )
+        )
+    }
+    suspend fun insertRemote(task: Task): Response<TaskDto>{
+        return taskService.postTask(task)
     }
 
-    suspend fun delete(taskId: Long, name: String, description: String, dueDate: String, userId: Long, projectId: Long) = withContext(Dispatchers.IO) {
-        taskDao.delete(TaskEntity(taskId, name, description, dueDate, userId, projectId))
+    suspend fun deleteLocally(id: Long, task: Task) = withContext(Dispatchers.IO) {
+        taskDao.delete(
+            TaskEntity(
+                id,
+                task.name,
+                task.description,
+                task.dueDate,
+                task.userId,
+                task.projectId
+            )
+        )
     }
 
-    suspend fun update(taskId: Long, name: String, description: String, dueDate: String, userId: Long, projectId: Long) = withContext(Dispatchers.IO) {
-        taskDao.update(TaskEntity(taskId, name, description, dueDate, userId, projectId))
+    suspend fun deleteRemote(taskId: Long): Response<Unit>{
+        return taskService.deleteTask(taskId)
+    }
+
+    suspend fun updateLocally(id: Long, task: Task) = withContext(Dispatchers.IO) {
+        taskDao.update(
+            TaskEntity(
+                id,
+                task.name,
+                task.description,
+                task.dueDate,
+                task.userId,
+                task.projectId
+            )
+        )
+    }
+
+    suspend fun updateRemote(taskId: Long, task: Task): Response<TaskDto> {
+        return taskService.updateTask(taskId,task)
     }
 
     suspend fun getTasks(): Resource<List<Task>> = withContext(Dispatchers.IO) {
@@ -41,5 +80,4 @@ class TaskRepository(
         }
         return@withContext Resource.Error(message = "Data not found")
     }
-
 }

@@ -77,7 +77,7 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
             } else {
                 user.data?.let {
                     LaunchedEffect(it) {
-                        navController.navigate("packageList")
+                        navController.navigate("home")
                     }
                 }
             }
