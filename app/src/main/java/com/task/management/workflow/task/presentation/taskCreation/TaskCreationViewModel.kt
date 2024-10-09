@@ -1,17 +1,14 @@
 package com.task.management.workflow.task.presentation.taskCreation
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
-import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class TaskCreationViewModel(private val repository: TaskRepository): ViewModel() {
     private val _state = mutableStateOf(TaskCreationState())
@@ -26,8 +23,8 @@ class TaskCreationViewModel(private val repository: TaskRepository): ViewModel()
     private val _description = mutableStateOf("")
     val description: State<String> get() = _description
 
-    private val _dueDate = mutableStateOf<String?>("")
-    val dueDate: State<String?> get() = _dueDate
+    private val _dueDate = mutableStateOf<String>("")
+    val dueDate: State<String> get() = _dueDate
 
     private val _userId = mutableLongStateOf(0)
     val userId: State<Long> get() = _userId
@@ -69,7 +66,7 @@ class TaskCreationViewModel(private val repository: TaskRepository): ViewModel()
 
     }
 
-    fun getAllTasks(){
+    fun getAllRemoteTasks(){
         _state.value = TaskCreationState(isLoading = true)
         viewModelScope.launch {
             val result = repository.getTasks()
@@ -81,9 +78,9 @@ class TaskCreationViewModel(private val repository: TaskRepository): ViewModel()
         }
     }
 
-    fun createTask(id:Long, task: Task){
+    fun createTask(task: Task){
         viewModelScope.launch {
-            repository.insert(id,task.name,task.description,task.dueDate,task.userID,task.projectID)
+            repository.insertRemote(task)
         }
     }
 
@@ -96,12 +93,12 @@ class TaskCreationViewModel(private val repository: TaskRepository): ViewModel()
             if (task.description.length > 200 || task.name.length > 40) {
                 return@launch
             }
-            repository.update(id,task.name,task.description,task.dueDate,task.userID,task.projectID)
+            repository.updateRemote(id,task)
         }
     }
 
-    suspend fun deleteTask(id: Long, task: Task) {
-        repository.delete(id,task.name,task.description,task.dueDate,task.userID,task.projectID)
+    suspend fun deleteTask(id: Long) {
+        repository.deleteRemote(id)
     }
 
 }

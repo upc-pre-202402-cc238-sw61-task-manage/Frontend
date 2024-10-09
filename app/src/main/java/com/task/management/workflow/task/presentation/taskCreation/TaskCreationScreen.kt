@@ -25,10 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.task.management.workflow.task.domain.Task
 
 @Composable
-fun TaskScreen(viewModel: TaskCreationViewModel){
+fun TaskCreationScreen(viewModel: TaskCreationViewModel, navController: NavController){
     val state = viewModel.state.value
     val name = viewModel.name.value
     val description = viewModel.description.value
@@ -49,7 +50,7 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp),
+                    .padding(8.dp),
                 value = name,
                 onValueChange = {
                     viewModel.onNameChanged(it)
@@ -59,7 +60,7 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp),
+                    .padding(8.dp),
                 value = description,
                 onValueChange = {
                     viewModel.onDescriptionChanged(it)
@@ -88,7 +89,7 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
                 DatePickerDialog(
                     LocalContext.current,
                     { _, yearSelected, monthSelected, dayOfMonthSelected ->
-                        val selectedDate = "$dayOfMonthSelected/${monthSelected + 1}/$yearSelected"
+                        val selectedDate = "$yearSelected-${monthSelected + 1}-$dayOfMonthSelected"
                         viewModel.onDueDateChanged(selectedDate)
                         showDatePicker = false
                     },
@@ -99,19 +100,7 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp),
-                value = viewModel.taskId.value.toString(),
-                onValueChange = {
-                    viewModel.onTaskIdChanged(it)
-                },
-                label = { Text(text = "Task ID") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
+                    .padding(8.dp),
                 value = viewModel.userId.value.toString(),
                 onValueChange = {
                     viewModel.onUserIdChanged(it)
@@ -123,7 +112,7 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp),
+                    .padding(8.dp),
                 value = viewModel.projectId.value.toString(),
                 onValueChange = {
                     viewModel.onProjectIdChanged(it)
@@ -134,60 +123,12 @@ fun TaskScreen(viewModel: TaskCreationViewModel){
 
             Button(
                 onClick = {
-                    viewModel.createTask(taskId, Task(name, description, dueDate.toString(), userId, projectId))
+                    val newTask = Task(name,description,dueDate,userId,projectId)
+                    viewModel.createTask(newTask)
                 }
             ) {
                 Text("Create Task")
             }
-            Button(
-                onClick = {
-                    viewModel.getAllTasks()
-                }
-            ){
-                Text("Show all Tasks")
-            }
-        }
-
-        state.tasks?.let { tasks ->
-            LazyColumn {
-                items(tasks) { task ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    ) {
-
-                        TaskItem(task)
-
-                    }
-                }
-            }
-        } ?: run {
-            Text("No tasks available")
-        }
-
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
-        if(state.error.isNotEmpty()){
-            Text(state.error)
-        }
-
-    }
-}
-
-@Composable
-fun TaskItem(task: Task) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Column (modifier = Modifier
-                .padding(4.dp)
-                .weight(1f)
-        ) {
-            Text(task.name)
-            Text(task.description)
-            Text(task.dueDate)
-            Text("User ID: ${task.userID}")
-            Text("Project ID: ${task.projectID}")
         }
     }
 }
