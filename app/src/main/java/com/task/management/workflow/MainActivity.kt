@@ -29,6 +29,7 @@ import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.presentation.taskCreation.TaskCreationScreen
 import com.task.management.workflow.task.presentation.taskCreation.TaskCreationViewModel
+import com.task.management.workflow.task.presentation.taskList.TaskListScreen
 import com.task.management.workflow.ui.theme.WorkflowTheme
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -60,7 +61,7 @@ class MainActivity : ComponentActivity() {
         // Calendar
         val calendarService = retrofit.create(PackageService::class.java)
         val packageRepository = PackageRepository(calendarService)
-        val calendarViewModel = PackageListEventsViewModel(PackageRepository(calendarService))
+        val calendarViewModel = PackageListEventsViewModel(packageRepository)
 
         // Project
         val projectService = retrofit.create(ProjectService::class.java)
@@ -68,8 +69,7 @@ class MainActivity : ComponentActivity() {
         //Task
         val taskService = retrofit.create(TaskService::class.java)
         val taskRepository = TaskRepository(taskService, dao.getTaskDao())
-        val taskViewModel = TaskCreationViewModel(taskRepository)
-
+        val taskCreationViewModel = TaskCreationViewModel(taskRepository)
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -77,14 +77,15 @@ class MainActivity : ComponentActivity() {
             WorkflowTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "signIn") {
-                    //This one is only for testing purposes. It won't be used on the app
+                    //Home is only for testing purposes. It won't be used on the app
                     composable("home") { HomeScreen(navController) }
                     composable("signIn") { SignInScreen(signInViewModel, navController) }
                     composable("signUp") { SignUpScreen(signUpViewModel, navController) }
                     composable("calendar") { PackageListEventScreen(calendarViewModel, navController) }
                     composable("projectCreation") {  }
                     composable("profiles") { TeammateView(navController) }
-                    composable("tasks") { TaskCreationScreen(taskViewModel, navController) }
+                    composable("tasks") { TaskCreationScreen(taskCreationViewModel, navController) }
+                    composable("taskList") { TaskListScreen(taskCreationViewModel, navController) }
                 }
             }
         }

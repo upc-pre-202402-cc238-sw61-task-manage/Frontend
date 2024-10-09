@@ -129,56 +129,6 @@ fun TaskCreationScreen(viewModel: TaskCreationViewModel, navController: NavContr
             ) {
                 Text("Create Task")
             }
-
-            Button(
-                onClick = {
-                    viewModel.getAllRemoteTasks()
-                }
-            ){
-                Text("Show all Tasks")
-            }
-        }
-
-        state.tasks?.let { tasks ->
-            LazyColumn {
-                items(tasks) { task ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    ) {
-
-                        TaskItem(task)
-
-                    }
-                }
-            }
-        } ?: run {
-            Text("No tasks available")
-        }
-
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
-        if(state.error.isNotEmpty()){
-            Text(state.error)
-        }
-
-    }
-}
-
-@Composable
-fun TaskItem(task: Task) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Column (modifier = Modifier
-                .padding(4.dp)
-                .weight(1f)
-        ) {
-            Text(task.name)
-            Text(task.description)
-            Text(task.dueDate)
-            Text("User ID: ${task.userId}")
-            Text("Project ID: ${task.projectId}")
         }
     }
 }
