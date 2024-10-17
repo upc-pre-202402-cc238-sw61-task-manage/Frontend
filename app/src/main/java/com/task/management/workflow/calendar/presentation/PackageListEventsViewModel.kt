@@ -44,10 +44,8 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
     fun addEvent(title: String, description: String, day: Int, month: Int, year: Int) {
         _state.value = UIState(isLoading = true)
         viewModelScope.launch {
-            //Modificar el projectId dependiendo de el proyecto del usuario
             val newEvent = CreateEventRequest(0, _userId.intValue, title, description, day, month, year)
 
-            // Llamar al repositorio para añadir el evento
             val result = repository.addEvent(newEvent)
 
             if (result is Resource.Success) {
@@ -57,4 +55,16 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
             }
         }
     }
+
+    fun removeEvent(eventId: Int) {
+        viewModelScope.launch {
+            val result = repository.deleteEvent(eventId)
+            if (result is Resource.Success) {
+                getPackages()
+            } else {
+                _state.value = UIState(error = result.message ?: "An error occurred")
+            }
+        }
+    }
+
 }
