@@ -25,11 +25,6 @@ import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpViewModel
 import com.task.management.workflow.profiles.TeammateView
 import com.task.management.workflow.project.data.remote.ProjectService
-import com.task.management.workflow.task.data.remote.TaskService
-import com.task.management.workflow.task.data.repository.TaskRepository
-import com.task.management.workflow.task.presentation.taskCreation.TaskCreationScreen
-import com.task.management.workflow.task.presentation.taskCreation.TaskCreationViewModel
-import com.task.management.workflow.task.presentation.taskList.TaskListScreen
 import com.task.management.workflow.ui.theme.WorkflowTheme
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -66,11 +61,6 @@ class MainActivity : ComponentActivity() {
         // Project
         val projectService = retrofit.create(ProjectService::class.java)
 
-        //Task
-        val taskService = retrofit.create(TaskService::class.java)
-        val taskRepository = TaskRepository(taskService, dao.getTaskDao())
-        val taskCreationViewModel = TaskCreationViewModel(taskRepository)
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -84,8 +74,6 @@ class MainActivity : ComponentActivity() {
                     composable("calendar") { PackageListEventScreen(calendarViewModel, navController) }
                     composable("projectCreation") {  }
                     composable("profiles") { TeammateView(navController) }
-                    composable("tasks") { TaskCreationScreen(taskCreationViewModel, navController) }
-                    composable("taskList") { TaskListScreen(taskCreationViewModel, navController) }
                 }
             }
         }
