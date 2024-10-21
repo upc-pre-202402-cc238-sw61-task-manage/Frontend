@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.task.management.workflow.task.domain.Task
 import com.task.management.workflow.task.domain.TaskStatus
+import com.task.management.workflow.ui.theme.FailureColor
+import com.task.management.workflow.ui.theme.HighlightColor
+import com.task.management.workflow.ui.theme.RecentColor
+import com.task.management.workflow.ui.theme.SuccessColor
+import com.task.management.workflow.ui.theme.WarningColor
 
 
 @Composable
@@ -79,36 +86,53 @@ fun TaskListScreen(viewModel: TaskListViewModel, navController: NavController){
             state.data?.let { taskList: List<Task> ->
                 LazyColumn {
                     items(taskList) { task ->
-                        Card (modifier = Modifier.padding(4.dp)) {
+                        Card (modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                        ) {
                             Box(
                                 modifier = Modifier
-                                    .padding(4.dp)
-                                    .height(8.dp)
-                                    .fillMaxWidth()
+                                    .padding(
+                                        start = 0.dp,
+                                        top = 10.dp,
+                                        end = 10.dp,
+                                        bottom = 2.dp
+                                    )
+                                    .height(14.dp)
+                                    .fillMaxWidth(0.4f)
                                     .align(Alignment.End)
+                                    .clip(RoundedCornerShape(8.dp))
                                     .background(
                                         when (task.status) {
-                                            TaskStatus.NEW -> Color(0xFF4B78FF)
-                                            TaskStatus.PENDING -> Color(0xFFFFBD59)
-                                            TaskStatus.COMPLETED -> Color(0xFF00BF63)
+                                            TaskStatus.NEW -> RecentColor
+                                            TaskStatus.PENDING -> WarningColor
+                                            TaskStatus.COMPLETED -> SuccessColor
+                                            TaskStatus.OVERDUE -> FailureColor
+                                            TaskStatus.COMPLETED_OVERDUE -> HighlightColor
                                         }
                                     )
                             )
 
-                            Text(
-                                modifier = Modifier.padding(4.dp),
-                                text = task.name,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            )
-                            Text(
-                                modifier = Modifier.padding(4.dp),
-                                text = task.description
-                            )
-                            Text(
-                                modifier = Modifier.padding(4.dp),
-                                text = task.dueDate
-                            )
+                            Column(modifier = Modifier
+                                .padding(
+                                    start = 16.dp,
+                                    top = 4.dp,
+                                    end = 4.dp,
+                                    bottom = 4.dp
+                                )
+                            ) {
+                                Text(
+                                    text = task.name,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp
+                                )
+                                Text(
+                                    text = task.description
+                                )
+                                Text(
+                                    text = task.dueDate
+                                )
+                            }
                         }
                     }
                 }
