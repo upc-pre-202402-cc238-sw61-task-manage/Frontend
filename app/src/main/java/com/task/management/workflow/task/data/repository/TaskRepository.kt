@@ -7,6 +7,7 @@ import com.task.management.workflow.task.data.remote.TaskDto
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.remote.toTask
 import com.task.management.workflow.task.domain.Task
+import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -22,7 +23,8 @@ class TaskRepository (
                 task.description,
                 task.dueDate,
                 task.userId,
-                task.projectId
+                task.projectId,
+                task.status
             )
         )
     }
@@ -35,7 +37,8 @@ class TaskRepository (
                 task.description,
                 task.dueDate,
                 task.userId,
-                task.projectId
+                task.projectId,
+                task.status
             )
         )
     }
@@ -54,6 +57,40 @@ class TaskRepository (
             return@withContext Resource.Error(message = "An error occurred")
         } catch (e: Exception){
             return@withContext Resource.Error(message = e.message?: "An error occurred")
+        }
+    }
+
+    suspend fun getTasksByProjectAndStatus(projectId: Long, status: String?): Resource<List<Task>> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getTasksByProjectId(projectId, status)
+            if (response.isSuccessful) {
+                response.body()?.let { tasksDto: List<TaskDto> ->
+                    val tasks = tasksDto.map { taskDto: TaskDto ->
+                        taskDto.toTask()
+                    }.toList()
+                    return@withContext Resource.Success(data = tasks)
+                }
+            }
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message ?: "An error occurred")
+        }
+    }
+
+    suspend fun getTasksByProjectAndUserAndStatus(projectId: Long, userId: Long, status: String?): Resource<List<Task>> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getTasksByProjectAndUserId(projectId, userId, status)
+            if (response.isSuccessful) {
+                response.body()?.let { tasksDto: List<TaskDto> ->
+                    val tasks = tasksDto.map { taskDto: TaskDto ->
+                        taskDto.toTask()
+                    }.toList()
+                    return@withContext Resource.Success(data = tasks)
+                }
+            }
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message ?: "An error occurred")
         }
     }
 }

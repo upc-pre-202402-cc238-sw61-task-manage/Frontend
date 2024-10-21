@@ -9,11 +9,15 @@ import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
+import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.launch
 
 class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
     private val _state = mutableStateOf(UIState<List<Task>>())
     val state: State<UIState<List<Task>>> get() = _state
+
+    private val _statusItemId = mutableStateOf<Short>(0)
+    val statusItemId: State<Short> get() = _statusItemId
 
     private val _taskId = mutableLongStateOf(0)
     val taskId: State<Long> get() = _taskId
@@ -37,6 +41,15 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
         val newLongValue = newValue.toLongOrNull()
         if (newLongValue != null) {
             _taskId.longValue = newLongValue
+        }
+    }
+
+    fun onStatusItemIDChanged(id: Short, status: String){
+        _statusItemId.value = id
+        if(id == 1.toShort()){
+            getTasks()
+        } else {
+            getTasksFromProject(1, status)
         }
     }
 
@@ -66,17 +79,29 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
         }
     }
 
-    fun getTasks(){
+    private fun fetchTasks(
+        fetchFunction: suspend () -> Resource<List<Task>>
+    ) {
         _state.value = UIState(isLoading = true)
-        viewModelScope.launch{
-            val result= repository.getTasks()
-            if(result is Resource.Success){
+        viewModelScope.launch {
+            val result = fetchFunction()
+            if (result is Resource.Success) {
                 _state.value = UIState(data = result.data)
             } else {
-                _state.value = UIState(error = result.message?: "An error occurred")
+                _state.value = UIState(error = result.message ?: "An error occurred")
             }
         }
     }
 
+    private fun getTasks() {
+        fetchTasks { repository.getTasks() }
+    }
 
+    private fun getTasksFromProject(projectId: Long, status: String) {
+        fetchTasks { repository.getTasksByProjectAndStatus(projectId, status) }
+    }
+
+    private fun getTasksFromProjectWithUserId(projectId: Long, userId: Long, status: String) {
+        fetchTasks { repository.getTasksByProjectAndUserAndStatus(projectId, userId, status) }
+    }
 }

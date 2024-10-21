@@ -5,5 +5,6 @@ data class Task(
     var description: String,
     var dueDate: String,
     val userId: Long,
-    val projectId: Long
+    val projectId: Long,
+    var status: TaskStatus = TaskStatus.NEW
 )
