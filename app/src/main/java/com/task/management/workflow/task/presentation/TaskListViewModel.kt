@@ -19,9 +19,6 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
     private val _statusItemId = mutableStateOf<Short>(0)
     val statusItemId: State<Short> get() = _statusItemId
 
-    private val _taskId = mutableLongStateOf(0)
-    val taskId: State<Long> get() = _taskId
-
     private val _name = mutableStateOf("")
     val name: State<String> get() = _name
 
@@ -37,19 +34,12 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
     private val _projectId = mutableLongStateOf(0)
     val projectId: State<Long> get() = _projectId
 
-    fun onTaskIdChanged(newValue: String) {
-        val newLongValue = newValue.toLongOrNull()
-        if (newLongValue != null) {
-            _taskId.longValue = newLongValue
-        }
-    }
-
-    fun onStatusItemIDChanged(id: Short, status: String){
-        _statusItemId.value = id
-        if(id == 1.toShort()){
-            getTasks()
+    fun onStatusItemIDChanged(projectId: Long, itemId: Short, status: String){
+        _statusItemId.value = itemId
+        if(itemId == 1.toShort()){
+            getTasksFromProject(projectId)
         } else {
-            getTasksFromProject(1, status)
+            getTasksFromProject(projectId, status)
         }
     }
 
@@ -97,7 +87,7 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
         fetchTasks { repository.getTasks() }
     }
 
-    private fun getTasksFromProject(projectId: Long, status: String) {
+    private fun getTasksFromProject(projectId: Long, status: String? = null) {
         fetchTasks { repository.getTasksByProjectAndStatus(projectId, status) }
     }
 

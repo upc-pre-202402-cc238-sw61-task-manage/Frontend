@@ -32,7 +32,6 @@ fun TaskCreationScreen(viewModel: TaskListViewModel, navController: NavControlle
     val dueDate by viewModel.dueDate
     val userId = viewModel.userId.value
     val projectId = viewModel.projectId.value
-    val taskId = viewModel.taskId.value
     var showDatePicker by remember { mutableStateOf(false) }
 
     Scaffold { paddingValues ->
