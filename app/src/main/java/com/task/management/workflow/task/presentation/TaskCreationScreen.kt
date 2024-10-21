@@ -68,9 +68,7 @@ fun TaskCreationScreen(viewModel: TaskListViewModel, navController: NavControlle
                 Text(text = "Due Date")
             }
 
-            dueDate?.let {
-                Text(text = "Selected Due Date: $it")
-            }
+            Text(text = "Selected Due Date: $dueDate")
 
             if (showDatePicker) {
                 val calendar = Calendar.getInstance()

@@ -27,6 +27,7 @@ import com.task.management.workflow.profiles.TeammateView
 import com.task.management.workflow.project.data.remote.ProjectService
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.TaskRepository
+import com.task.management.workflow.task.presentation.TaskCreationScreen
 import com.task.management.workflow.task.presentation.TaskListScreen
 import com.task.management.workflow.task.presentation.TaskListViewModel
 import com.task.management.workflow.ui.theme.WorkflowTheme
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
                     composable("signUp") { SignUpScreen(signUpViewModel, navController) }
                     composable("calendar") { PackageListEventScreen(calendarViewModel, navController) }
                     composable("taskList") { TaskListScreen(taskViewModel,navController) }
+                    composable("taskCreation") { TaskCreationScreen(taskViewModel, navController) }
                     composable("projectCreation") {  }
                     composable("profiles") { TeammateView(navController) }
                 }

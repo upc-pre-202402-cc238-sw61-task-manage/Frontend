@@ -9,15 +9,16 @@ import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
-import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.launch
 
 class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
     private val _state = mutableStateOf(UIState<List<Task>>())
     val state: State<UIState<List<Task>>> get() = _state
 
-    private val _statusItemId = mutableStateOf<Short>(0)
-    val statusItemId: State<Short> get() = _statusItemId
+    private var defaultState = "ALL"
+
+    private val _statusItem = mutableStateOf(defaultState)
+    val statusItem: State<String> get() = _statusItem
 
     private val _name = mutableStateOf("")
     val name: State<String> get() = _name
@@ -28,18 +29,38 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
     private val _dueDate = mutableStateOf<String>("")
     val dueDate: State<String> get() = _dueDate
 
-    private val _userId = mutableLongStateOf(0)
+    private val _userId = mutableLongStateOf(1)
     val userId: State<Long> get() = _userId
 
-    private val _projectId = mutableLongStateOf(0)
+    private val _projectId = mutableLongStateOf(1)
     val projectId: State<Long> get() = _projectId
 
-    fun onStatusItemIDChanged(projectId: Long, itemId: Short, status: String){
-        _statusItemId.value = itemId
-        if(itemId == 1.toShort()){
-            getTasksFromProject(projectId)
-        } else {
-            getTasksFromProject(projectId, status)
+    private val _onlyShowUser = mutableStateOf(false)
+    val onlyShowUser: State<Boolean> get() = _onlyShowUser
+
+    fun onStatusItemChanged(status: String){
+        _statusItem.value = status
+    }
+
+    fun onOnlyShowUserChanged(onlyShowUser: Boolean){
+        _onlyShowUser.value = onlyShowUser
+    }
+
+    fun searchTasks(){
+        if(this.onlyShowUser.value) {
+            if(statusItem.value == defaultState) {
+                getTasksFromProjectWithUserId(projectId.value,userId.value)
+            }
+            else {
+                getTasksFromProjectWithUserId(projectId.value,userId.value, statusItem.value)
+            }
+        }
+        else {
+            if(statusItem.value == defaultState){
+                getTasksFromProject(projectId.value)
+            } else {
+                getTasksFromProject(projectId.value,statusItem.value)
+            }
         }
     }
 
@@ -91,7 +112,7 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
         fetchTasks { repository.getTasksByProjectAndStatus(projectId, status) }
     }
 
-    private fun getTasksFromProjectWithUserId(projectId: Long, userId: Long, status: String) {
+    private fun getTasksFromProjectWithUserId(projectId: Long, userId: Long, status: String? = null) {
         fetchTasks { repository.getTasksByProjectAndUserAndStatus(projectId, userId, status) }
     }
 }

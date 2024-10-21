@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
@@ -27,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -46,20 +50,21 @@ import com.task.management.workflow.ui.theme.WarningColor
 fun TaskListScreen(viewModel: TaskListViewModel, navController: NavController){
     val state = viewModel.state.value
 
-    val statusItemId = viewModel.statusItemId.value;
+    val status = viewModel.statusItem.value
+
+    var onlyShowUser = viewModel.onlyShowUser.value
 
     val statusList = listOf(
-        StatusItem(1, "ALL"),
-        StatusItem(2, "NEW"),
-        StatusItem(3, "PENDING"),
-        StatusItem(4, "COMPLETED"),
-        StatusItem(5, "OVERDUE"),
-        StatusItem(6, "COMPLETED_OVERDUE")
+        "ALL",
+        "NEW",
+        "PENDING",
+        "COMPLETED",
+        "OVERDUE",
+        "COMPLETED_OVERDUE"
     )
 
     Scaffold { paddingValues ->
         Column (modifier = Modifier.padding(paddingValues)) {
-
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,6 +81,53 @@ fun TaskListScreen(viewModel: TaskListViewModel, navController: NavController){
                 label = { Text(text = "Project ID") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp,
+                        top = 10.dp,
+                        bottom = 10.dp
+                    ),
+                value = viewModel.userId.value.toString(),
+                onValueChange = {
+                    viewModel.onUserIdChanged(it)
+                },
+                label = { Text(text = "User ID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+            Row (
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "Only show my tasks: ",
+                    modifier = Modifier
+                        .padding(end = 10.dp, top = 14.dp)
+                )
+                FilterChip(
+                    modifier = Modifier.padding(4.dp),
+                    selected = onlyShowUser,
+                    label = {
+                        Text("Show my tasks")
+                    },
+                    leadingIcon = {
+                        if (onlyShowUser) {
+                            Icon(
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = "Done icon",
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    },
+                    onClick = {
+                        onlyShowUser = !onlyShowUser
+                        viewModel.onOnlyShowUserChanged(onlyShowUser)
+                    }
+                )
+            }
 
             LazyRow (
                 modifier = Modifier.fillMaxWidth(),
@@ -84,12 +136,12 @@ fun TaskListScreen(viewModel: TaskListViewModel, navController: NavController){
                 items(statusList) { statusItem ->
                     FilterChip(
                         modifier = Modifier.padding(4.dp),
-                        selected = statusItemId == statusItem.id,
+                        selected = status == statusItem,
                         label = {
-                         Text(statusItem.description)
+                         Text(statusItem)
                         },
                         leadingIcon = {
-                            if(statusItemId == statusItem.id) {
+                            if(status == statusItem) {
                                 Icon(
                                     imageVector = Icons.Filled.Done,
                                     contentDescription = "Done icon",
@@ -98,10 +150,29 @@ fun TaskListScreen(viewModel: TaskListViewModel, navController: NavController){
                             }
                         },
                         onClick = {
-                            viewModel.onStatusItemIDChanged(viewModel.projectId.value, statusItem.id,statusItem.description)
+                            viewModel.onStatusItemChanged(statusItem)
                         }
                     )
                 }
+            }
+
+            Button(
+                onClick = { viewModel.searchTasks() },
+                colors = ButtonColors(
+                    SuccessColor,
+                    Color.White,
+                    Color.Gray,
+                    Color.Gray
+                ),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(0.5f)
+            ) {
+                Text(
+                    text = "Search",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
             }
 
             if (state.isLoading){
