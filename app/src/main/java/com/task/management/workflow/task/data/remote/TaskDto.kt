@@ -1,6 +1,7 @@
 package com.task.management.workflow.task.data.remote
 
 import com.google.gson.annotations.SerializedName
+import com.task.management.workflow.task.domain.TaskStatus
 
 data class TaskDto(
     val taskId: Long,
@@ -11,7 +12,6 @@ data class TaskDto(
     var dueDate: String,
     val projectId: Long,
     @SerializedName("assignedUser")
-    var userId: Long
+    var userId: Long,
+    var status: TaskStatus
 )
-
-

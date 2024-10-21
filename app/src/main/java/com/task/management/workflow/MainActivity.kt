@@ -27,9 +27,9 @@ import com.task.management.workflow.profiles.TeammateView
 import com.task.management.workflow.project.data.remote.ProjectService
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.TaskRepository
-import com.task.management.workflow.task.presentation.taskCreation.TaskCreationScreen
-import com.task.management.workflow.task.presentation.taskCreation.TaskCreationViewModel
-import com.task.management.workflow.task.presentation.taskList.TaskListScreen
+import com.task.management.workflow.task.presentation.TaskCreationScreen
+import com.task.management.workflow.task.presentation.TaskListScreen
+import com.task.management.workflow.task.presentation.TaskListViewModel
 import com.task.management.workflow.ui.theme.WorkflowTheme
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
         //Task
         val taskService = retrofit.create(TaskService::class.java)
         val taskRepository = TaskRepository(taskService, dao.getTaskDao())
-        val taskCreationViewModel = TaskCreationViewModel(taskRepository)
+        val taskViewModel = TaskListViewModel(taskRepository)
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -82,10 +82,10 @@ class MainActivity : ComponentActivity() {
                     composable("signIn") { SignInScreen(signInViewModel, navController) }
                     composable("signUp") { SignUpScreen(signUpViewModel, navController) }
                     composable("calendar") { PackageListEventScreen(calendarViewModel, navController) }
+                    composable("taskList") { TaskListScreen(taskViewModel,navController) }
+                    composable("taskCreation") { TaskCreationScreen(taskViewModel, navController) }
                     composable("projectCreation") {  }
                     composable("profiles") { TeammateView(navController) }
-                    composable("tasks") { TaskCreationScreen(taskCreationViewModel, navController) }
-                    composable("taskList") { TaskListScreen(taskCreationViewModel, navController) }
                 }
             }
         }

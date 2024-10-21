@@ -12,6 +12,6 @@ import com.task.management.workflow.task.data.local.TaskEntity
     version = 1
 )
 abstract class Database : RoomDatabase() {
-    abstract fun getTaskDao() : TaskDao
     abstract fun getProjectDao(): ProjectDao
+    abstract fun getTaskDao(): TaskDao
 }

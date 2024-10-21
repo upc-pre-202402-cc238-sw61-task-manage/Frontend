@@ -1,17 +1,12 @@
-package com.task.management.workflow.task.presentation.taskCreation
+package com.task.management.workflow.task.presentation
+
 
 import android.app.DatePickerDialog
-import android.icu.util.Calendar
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,26 +22,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.task.management.workflow.task.domain.Task
+import java.util.Calendar
 
 @Composable
-fun TaskCreationScreen(viewModel: TaskCreationViewModel, navController: NavController){
+fun TaskCreationScreen(viewModel: TaskListViewModel, navController: NavController){
     val state = viewModel.state.value
     val name = viewModel.name.value
     val description = viewModel.description.value
     val dueDate by viewModel.dueDate
     val userId = viewModel.userId.value
     val projectId = viewModel.projectId.value
-    val taskId = viewModel.taskId.value
     var showDatePicker by remember { mutableStateOf(false) }
 
     Scaffold { paddingValues ->
-        Column (
+        Column(
             modifier = Modifier.padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-          if (state.isLoading) {
-              CircularProgressIndicator()
-          }
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,9 +68,7 @@ fun TaskCreationScreen(viewModel: TaskCreationViewModel, navController: NavContr
                 Text(text = "Due Date")
             }
 
-            dueDate?.let {
-                Text(text = "Selected Due Date: $it")
-            }
+            Text(text = "Selected Due Date: $dueDate")
 
             if (showDatePicker) {
                 val calendar = Calendar.getInstance()
@@ -124,7 +114,6 @@ fun TaskCreationScreen(viewModel: TaskCreationViewModel, navController: NavContr
             Button(
                 onClick = {
                     val newTask = Task(name,description,dueDate,userId,projectId)
-                    viewModel.createTask(newTask)
                 }
             ) {
                 Text("Create Task")

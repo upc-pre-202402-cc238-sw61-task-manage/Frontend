@@ -7,77 +7,90 @@ import com.task.management.workflow.task.data.remote.TaskDto
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.remote.toTask
 import com.task.management.workflow.task.domain.Task
+import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 
-class TaskRepository(
-    private val taskService: TaskService,
-    private val taskDao: TaskDao
-) {
-    suspend fun insertLocally(id: Long, task: Task) = withContext(Dispatchers.IO){
-        taskDao.insert(
+class TaskRepository (
+    private val service: TaskService,
+    private val dao: TaskDao
+){
+    suspend fun insertTask(taskId: Long, task: Task) = withContext(Dispatchers.IO){
+        dao.insert(
             TaskEntity(
-                id,
+                taskId,
                 task.name,
                 task.description,
                 task.dueDate,
                 task.userId,
-                task.projectId
+                task.projectId,
+                task.status
             )
         )
     }
-    suspend fun insertRemote(task: Task): Response<TaskDto>{
-        return taskService.postTask(task)
-    }
 
-    suspend fun deleteLocally(id: Long, task: Task) = withContext(Dispatchers.IO) {
-        taskDao.delete(
+    suspend fun deleteTask(taskId: Long, task: Task) = withContext(Dispatchers.IO){
+        dao.delete(
             TaskEntity(
-                id,
+                taskId,
                 task.name,
                 task.description,
                 task.dueDate,
                 task.userId,
-                task.projectId
+                task.projectId,
+                task.status
             )
         )
     }
 
-    suspend fun deleteRemote(taskId: Long): Response<Unit>{
-        return taskService.deleteTask(taskId)
-    }
-
-    suspend fun updateLocally(id: Long, task: Task) = withContext(Dispatchers.IO) {
-        taskDao.update(
-            TaskEntity(
-                id,
-                task.name,
-                task.description,
-                task.dueDate,
-                task.userId,
-                task.projectId
-            )
-        )
-    }
-
-    suspend fun updateRemote(taskId: Long, task: Task): Response<TaskDto> {
-        return taskService.updateTask(taskId,task)
-    }
-
-    suspend fun getTasks(): Resource<List<Task>> = withContext(Dispatchers.IO) {
-        val response = taskService.getAllTasks()
-        if(response.isSuccessful){
-            response.body()?.tasks?.let { tasksDto ->
-                val tasks = mutableListOf<Task>()
-                tasksDto.forEach { taskDto: TaskDto ->
-                    val task = taskDto.toTask()
-                    tasks += task
+    suspend fun getTasks(): Resource<List<Task>> = withContext(Dispatchers.IO){
+        try {
+            val response = service.getAllTasks()
+            if(response.isSuccessful){
+                response.body()?.let { tasksDto: List<TaskDto> ->
+                    val tasks = tasksDto.map { taskDto: TaskDto ->
+                        taskDto.toTask()
+                    }.toList()
+                    return@withContext Resource.Success(data = tasks)
                 }
-                return@withContext Resource.Success(data = tasks.toList())
             }
-            return@withContext Resource.Error(message = response.body()?.error?: "")
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception){
+            return@withContext Resource.Error(message = e.message?: "An error occurred")
         }
-        return@withContext Resource.Error(message = "Data not found")
+    }
+
+    suspend fun getTasksByProjectAndStatus(projectId: Long, status: String?): Resource<List<Task>> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getTasksByProjectId(projectId, status)
+            if (response.isSuccessful) {
+                response.body()?.let { tasksDto: List<TaskDto> ->
+                    val tasks = tasksDto.map { taskDto: TaskDto ->
+                        taskDto.toTask()
+                    }.toList()
+                    return@withContext Resource.Success(data = tasks)
+                }
+            }
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message ?: "An error occurred")
+        }
+    }
+
+    suspend fun getTasksByProjectAndUserAndStatus(projectId: Long, userId: Long, status: String?): Resource<List<Task>> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getTasksByProjectAndUserId(projectId, userId, status)
+            if (response.isSuccessful) {
+                response.body()?.let { tasksDto: List<TaskDto> ->
+                    val tasks = tasksDto.map { taskDto: TaskDto ->
+                        taskDto.toTask()
+                    }.toList()
+                    return@withContext Resource.Success(data = tasks)
+                }
+            }
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message ?: "An error occurred")
+        }
     }
 }

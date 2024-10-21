@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.task.management.workflow.task.domain.TaskStatus
 
 @Dao
 interface TaskDao {
@@ -17,15 +18,25 @@ interface TaskDao {
     @Update
     suspend fun update(taskEntity: TaskEntity)
 
-    @Query("select * from tasks")
+    @Query("SELECT * FROM tasks")
     suspend fun fetchAll(): List<TaskEntity>
 
-    @Query("select * from tasks where task_id =:taskId")
+    @Query("SELECT * FROM tasks WHERE task_id =:taskId")
     suspend fun fetchByTaskId(taskId: Int): TaskEntity?
 
-    @Query("select * from tasks where task_name =:name")
+    @Query("SELECT * FROM tasks WHERE task_name =:name")
     suspend fun fetchByName(name: String): TaskEntity?
 
-    @Query("select * from tasks where assigned_user =:userId")
+    @Query("SELECT * FROM tasks WHERE assigned_user =:userId")
     suspend fun fetchByUserId(userId: Int): TaskEntity?
+
+    @Query("SELECT * FROM tasks WHERE (:status IS NULL OR status = :status)")
+    suspend fun fetchByStatus(status: TaskStatus?): List<TaskEntity>
+
+    @Query("SELECT * FROM tasks WHERE assigned_project = :projectId AND (:status IS NULL OR status = :status)")
+    suspend fun fetchByProjectIdAndStatus(projectId: Int, status: TaskStatus?): List<TaskEntity>
+
+    @Query("SELECT * FROM tasks WHERE assigned_user = :userId AND assigned_project = :projectId AND (:status IS NULL OR status = :status)")
+    suspend fun fetchByProjectIdAndUserIdAndStatus(userId: Int, projectId: Int, status: TaskStatus?): List<TaskEntity>
+
 }
