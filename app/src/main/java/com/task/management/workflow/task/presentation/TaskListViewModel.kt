@@ -9,6 +9,7 @@ import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
+import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.launch
 
 class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
@@ -114,5 +115,46 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
 
     private fun getTasksFromProjectWithUserId(projectId: Long, userId: Long, status: String? = null) {
         fetchTasks { repository.getTasksByProjectAndUserAndStatus(projectId, userId, status) }
+    }
+
+    fun createTask() {
+        viewModelScope.launch {
+            val newTask = Task(
+                name = name.value,
+                description = description.value,
+                dueDate = dueDate.value,
+                userId = userId.value,
+                projectId = projectId.value,
+                status = TaskStatus.NEW
+            )
+            val result = repository.postTask(newTask)
+        }
+    }
+
+    fun updateTask(task: Task) {
+        viewModelScope.launch {
+            val result = repository.putTask(task)
+            if (result is Resource.Success) {
+                searchTasks()
+            }
+        }
+    }
+
+    fun deleteTask(task: Task){
+        viewModelScope.launch {
+            val taskId = task.taskId?: 0
+            val result = repository.deleteTask(taskId)
+            if (result is Resource.Success) {
+                _state.value = UIState(
+                    isLoading = false,
+                    data = _state.value.data?.filter { it.taskId != task.taskId }
+                )
+            } else {
+                _state.value = UIState(
+                    isLoading = false,
+                    error = result.message ?: "Unknown error"
+                )
+            }
+        }
     }
 }
