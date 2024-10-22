@@ -66,6 +66,14 @@ fun HomeScreen(navController: NavController){
             ) {
                 Text("Task List")
             }
+            Button(
+                modifier = Modifier.padding(4.dp),
+                onClick = {
+                    navController.navigate("taskCreation")
+                }
+            ) {
+                Text("Task Creation")
+            }
         }
     }
 }

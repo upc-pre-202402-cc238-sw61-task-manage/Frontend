@@ -6,8 +6,8 @@ import com.task.management.workflow.task.data.local.TaskEntity
 import com.task.management.workflow.task.data.remote.TaskDto
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.remote.toTask
+import com.task.management.workflow.task.data.remote.toTaskDto
 import com.task.management.workflow.task.domain.Task
-import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,7 +29,7 @@ class TaskRepository (
         )
     }
 
-    suspend fun deleteTask(taskId: Long, task: Task) = withContext(Dispatchers.IO){
+    suspend fun eliminateTask(taskId: Long, task: Task) = withContext(Dispatchers.IO){
         dao.delete(
             TaskEntity(
                 taskId,
@@ -93,4 +93,49 @@ class TaskRepository (
             return@withContext Resource.Error(message = e.message ?: "An error occurred")
         }
     }
+
+    suspend fun postTask(task: Task): Resource<Task> = withContext(Dispatchers.IO) {
+        try {
+            val newTaskDto = task.toTaskDto()
+            val response = service.postTask(newTaskDto)
+            if (response.isSuccessful) {
+                response.body()?.let { dto ->
+                    return@withContext Resource.Success(data = dto.toTask())
+                }
+            }
+            return@withContext Resource.Error(message = "Error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message ?: "Error occurred")
+        }
+    }
+
+    suspend fun putTask(task: Task): Resource<Task> = withContext(Dispatchers.IO){
+        val taskId = task.taskId ?: return@withContext Resource.Error("Id cannot be null")
+        try {
+            val response = service.updateTask(taskId, task.toTaskDto())
+            if (response.isSuccessful) {
+                response.body()?.let { taskDto ->
+                    return@withContext Resource.Success(taskDto.toTask())
+                }
+            }
+            return@withContext Resource.Error("Update failed")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(e.message ?: "An error occurred")
+        }
+    }
+
+    suspend fun deleteTask(taskId: Long): Resource<Unit> = withContext(Dispatchers.IO){
+        if(taskId == 0.toLong()) return@withContext Resource.Error("An error occurred")
+        try {
+            val response = service.deleteTask(taskId)
+            if (response.isSuccessful) {
+                return@withContext Resource.Success(Unit)
+            } else {
+                return@withContext Resource.Error("Failed to delete task: ${response.message()}")
+            }
+        } catch (e: Exception) {
+            return@withContext Resource.Error(e.message ?: "An error occurred")
+        }
+    }
+
 }

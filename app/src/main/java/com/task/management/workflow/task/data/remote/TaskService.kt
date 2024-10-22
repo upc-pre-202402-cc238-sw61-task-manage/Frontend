@@ -1,7 +1,5 @@
 package com.task.management.workflow.task.data.remote
 
-import com.task.management.workflow.task.domain.Task
-import com.task.management.workflow.task.domain.TaskStatus
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -32,12 +30,12 @@ interface TaskService {
     ): Response<List<TaskDto>>
 
     @POST("api/v1/tasks")
-    suspend fun postTask(@Body task: Task): Response<TaskDto>
+    suspend fun postTask(@Body task: TaskDto): Response<TaskDto>
 
     @PUT("api/v1/tasks/{taskId}")
     suspend fun updateTask(
         @Path("taskId") taskId: Long,
-        @Body task: Task
+        @Body task: TaskDto
     ): Response<TaskDto>
 
     @DELETE("api/v1/tasks/{taskId}")

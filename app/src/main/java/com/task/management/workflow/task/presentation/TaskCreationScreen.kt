@@ -18,8 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.task.management.workflow.task.domain.Task
 import java.util.Calendar
@@ -35,35 +37,64 @@ fun TaskCreationScreen(viewModel: TaskListViewModel, navController: NavControlle
     var showDatePicker by remember { mutableStateOf(false) }
 
     Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues),
+        Column (
+            modifier = Modifier
+                .padding(paddingValues)
+            ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "Create a new Task",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 20.dp)
+            )
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(10.dp)
+                    .fillMaxWidth(),
                 value = name,
                 onValueChange = {
                     viewModel.onNameChanged(it)
                 },
-                label = { Text("Name") }
+                label = { (Text("Name"))}
             )
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(10.dp)
+                    .fillMaxWidth(),
                 value = description,
                 onValueChange = {
                     viewModel.onDescriptionChanged(it)
                 },
                 label = { Text("Description") }
             )
-
+            OutlinedTextField(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+                value = userId.toString(),
+                onValueChange = {
+                    viewModel.onUserIdChanged(it)
+                },
+                label = { Text(text = "User ID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            OutlinedTextField(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+                value = projectId.toString(),
+                onValueChange = {
+                    viewModel.onProjectIdChanged(it)
+                },
+                label = { Text(text = "Project ID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
             Button(
-                onClick = {
-                    showDatePicker = true
-                }
+                onClick = { showDatePicker = true }
             ) {
                 Text(text = "Due Date")
             }
@@ -87,36 +118,13 @@ fun TaskCreationScreen(viewModel: TaskListViewModel, navController: NavControlle
                 ).show()
             }
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                value = viewModel.userId.value.toString(),
-                onValueChange = {
-                    viewModel.onUserIdChanged(it)
-                },
-                label = { Text(text = "User ID") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                value = viewModel.projectId.value.toString(),
-                onValueChange = {
-                    viewModel.onProjectIdChanged(it)
-                },
-                label = { Text(text = "Project ID") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
             Button(
+                modifier = Modifier.padding(10.dp),
                 onClick = {
-                    val newTask = Task(name,description,dueDate,userId,projectId)
+                    viewModel.createTask()
                 }
             ) {
-                Text("Create Task")
+                Text(text = "Create Task")
             }
         }
     }
