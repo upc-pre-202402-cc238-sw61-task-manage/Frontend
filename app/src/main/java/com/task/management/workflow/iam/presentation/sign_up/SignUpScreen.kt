@@ -122,6 +122,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                     roles.forEach { label ->
                         DropdownMenuItem(onClick = {
                             mSelectedText = label
+                            viewModel.onRolesChanged(label)
                             expanded = false
                         },
                             text = { Text(label) })
@@ -146,12 +147,12 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                 if (user.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                } else if (user.error.isNotEmpty()) {
+                } else if (user.error != "Unauthorized") {
                     Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else {
                     user.data?.let {
                         LaunchedEffect(it) {
-                            navController.navigate("packageList")
+                            navController.navigate("signIn")
                         }
                     }
                 }

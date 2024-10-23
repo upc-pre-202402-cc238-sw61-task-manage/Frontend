@@ -46,6 +46,7 @@ class SignUpViewModel(private val repository: IAMRepository) : ViewModel() {
             val username = _username.value
             val password = _password.value
             val roles = _roles.value.split(",").map { it.trim() }
+            // log the all user data to request
             val userRequest = SignUpRequest(username, password, roles)
             val response = repository.signUp(userRequest)
 
