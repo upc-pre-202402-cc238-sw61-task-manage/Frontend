@@ -1,19 +1,22 @@
 package com.task.management.workflow.calendar.domain
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 data class EventPackage(
     val id: Int,
     val projectId: Int,
     val userId: Int,
     val title: String,
     val description: String,
-    val day: Int,
-    val month: Int,
-    val year: Int)
+    var dueDate: String)
 {
-    fun formattedDate(): String {
-        val formattedDay = day.toString().padStart(2, '0')
-        val formattedMonth = month.toString().padStart(2, '0')
-        return "$formattedDay/$formattedMonth/$year"
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun toLocalDate(): LocalDate {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return LocalDate.parse(dueDate, formatter)
     }
 
 }
