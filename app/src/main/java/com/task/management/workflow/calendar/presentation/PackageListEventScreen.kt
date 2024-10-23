@@ -109,14 +109,6 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                 label = { Text("User ID") }
             )
 
-            OutlinedButton(onClick = {
-                navController.navigate("profiles")
-            }) {
-                Icon(imageVector = Icons.Default.Person, contentDescription = "View Profile")
-                Text("View Profile")
-            }
-
-
             //Calendario
             HorizontalCalendar(
                 state = estate,
@@ -205,8 +197,8 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
     if (showDialogAddEvent) {
         AddEventDialog(
             onDismiss = { showDialogAddEvent = false },
-            onConfirm = { title, description, day, month, year ->
-                viewModel.addEvent(title, description, day, month, year)
+            onConfirm = { title, description, duedate ->
+                viewModel.addEvent(title, description, duedate)
                 showDialogAddEvent = false
             }
         )

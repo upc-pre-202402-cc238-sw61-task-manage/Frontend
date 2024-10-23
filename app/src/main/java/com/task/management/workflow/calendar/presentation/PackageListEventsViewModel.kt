@@ -61,13 +61,10 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
         }
     }
 
-    fun addEvent(title: String, description: String, day: Int, month: Int, year: Int) {
+    fun addEvent(title: String, description: String, duedate: String) {
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val date = LocalDate.of(year, month, day)
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val formattedDate = date.format(formatter)
-            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, formattedDate)
+            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, duedate)
 
             val result = repository.addEvent(newEvent)
 
