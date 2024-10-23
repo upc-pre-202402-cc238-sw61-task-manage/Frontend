@@ -1,16 +1,19 @@
 package com.task.management.workflow.iam.presentation.sign_up
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -26,7 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,41 +43,51 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     val expanded = remember { mutableStateOf(false) }
 
     Scaffold() { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.padding(32.dp),
+            contentAlignment = Alignment.Center
         ) {
-            OutlinedTextField(
-                value = viewModel.username.collectAsState().value,
-                onValueChange = { viewModel.onUsernameChanged(it) },
-                label = { Text("Username") },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            )
-            OutlinedTextField(
-                value = viewModel.password.collectAsState().value,
-                onValueChange = { viewModel.onPasswordChanged(it) },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            )
-
-
-            ExposedDropdownMenuBox(
-                expanded = expanded.value,
-                onExpandedChange = { expanded.value = !expanded.value }
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text("Sign up", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+                AsyncImage(
+                    model = "https://raw.githubusercontent.com/upc-pre-202402-cc238-sw61-task-manage/Workflow-Report/refs/heads/main/images/styles/logo-workflow.png",
+                    contentDescription = "Workflow logo",
+                    modifier = Modifier.size(120.dp)
+                )
+                OutlinedTextField(
+                    value = viewModel.username.collectAsState().value,
+                    onValueChange = { viewModel.onUsernameChanged(it) },
+                    label = { Text("Username", color = MaterialTheme.colorScheme.primary) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                )
+                OutlinedTextField(
+                    value = viewModel.password.collectAsState().value,
+                    onValueChange = { viewModel.onPasswordChanged(it) },
+                    label = { Text("Password", color = MaterialTheme.colorScheme.primary) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                )
+
+
+                ExposedDropdownMenuBox(
+                    expanded = expanded.value,
+                    onExpandedChange = { expanded.value = !expanded.value }
+                ) {
                     OutlinedTextField(
                         value = selectedRole,
                         onValueChange = { },
                         readOnly = true,
-                        label = { Text("Role") },
+                        label = { Text("Role", color = MaterialTheme.colorScheme.primary) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
                         },
@@ -80,46 +95,47 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally)
                     )
-                DropdownMenu(
+                    DropdownMenu(
                         expanded = expanded.value,
-                    onDismissRequest = { expanded.value = false }
-                ) {
-                    roles.forEach { role ->
-                        DropdownMenuItem(
-                            text = { Text(role) },
-                            onClick = {
-                                selectedRole = role
-                                viewModel.onRolesChanged(selectedRole)
+                        onDismissRequest = { expanded.value = false }
+                    ) {
+                        roles.forEach { role ->
+                            DropdownMenuItem(
+                                text = { Text(role, color = MaterialTheme.colorScheme.primary) },
+                                onClick = {
+                                    selectedRole = role
+                                    viewModel.onRolesChanged(selectedRole)
                                     expanded.value = false
-                            }
-                        )
+                                }
+                            )
+                        }
                     }
                 }
-            }
 
-            OutlinedButton(
-                onClick = { viewModel.signUp() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Text("Sign in")
-            }
+                OutlinedButton(
+                    onClick = { viewModel.signUp() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Sign in", color = MaterialTheme.colorScheme.secondary)
+                }
 
-            OutlinedButton(modifier = Modifier.align(Alignment.CenterHorizontally), onClick = {
-                navController.navigate("signIn")
-            }) {
-                Text("Already have an account? Sign in")
-            }
+                OutlinedButton(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally), onClick = {
+                    navController.navigate("signIn")
+                }) {
+                    Text("Already have an account? Sign in")
+                }
 
-            if (user.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else if (user.error.isNotEmpty()) {
-                Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else {
-                user.data?.let {
-                    LaunchedEffect(it) {
-                        navController.navigate("packageList")
+                if (user.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                } else if (user.error.isNotEmpty()) {
+                    Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
+                } else {
+                    user.data?.let {
+                        LaunchedEffect(it) {
+                            navController.navigate("packageList")
+                        }
                     }
                 }
             }
