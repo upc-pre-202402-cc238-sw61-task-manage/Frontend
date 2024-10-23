@@ -147,13 +147,12 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
 
                 if (user.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                } else if (user.error != "Unauthorized") {
+                } else if (user.error.isNotEmpty()) {
                     Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
-                } else {
-                    user.data?.let {
-                        LaunchedEffect(it) {
-                            navController.navigate("signIn")
-                        }
+                }
+                user.data?.let {
+                    LaunchedEffect(it) {
+                        navController.navigate("signIn")
                     }
                 }
             }
