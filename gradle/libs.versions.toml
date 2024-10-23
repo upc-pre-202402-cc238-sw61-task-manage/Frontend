@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "8.7.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -12,6 +12,14 @@ retrofit = "2.11.0"
 glide = "2.3.8"
 room = "2.6.1"
 ksp = "1.9.0-1.0.13"
+navigationCompose = "2.8.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.2"
+constraintlayout = "2.1.4"
+coil = "2.7.0"
+coilCompose = "2.7.0"
+coilComposeVersion = "3.0.0-rc01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +42,14 @@ glide = {group = "com.github.skydoves", name = "landscapist-glide", version.ref 
 room-runtime = {group = "androidx.room", name =  "room-runtime", version.ref = "room"}
 room-compiler = {group = "androidx.room", name =  "room-compiler", version.ref = "room"}
 room-ktx = {group = "androidx.room", name =  "room-ktx", version.ref = "room"}
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+coil3-coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilComposeVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
