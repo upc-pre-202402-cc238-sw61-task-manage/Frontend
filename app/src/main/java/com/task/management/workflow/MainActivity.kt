@@ -24,7 +24,7 @@ import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpViewModel
-import com.task.management.workflow.profiles.TeammateView
+import com.task.management.workflow.profiles.presentation.TeammateView
 import com.task.management.workflow.project.data.remote.ProjectService
 import com.task.management.workflow.project.data.repository.ProjectRepository
 import com.task.management.workflow.project.presentation.projectCreation.ProjectCreationViewModel
