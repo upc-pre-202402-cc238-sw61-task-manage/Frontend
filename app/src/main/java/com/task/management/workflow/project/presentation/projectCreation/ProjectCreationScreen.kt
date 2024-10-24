@@ -12,10 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.task.management.workflow.project.domain.Project
 
 @Composable
-fun ProjectScreen(viewModel: ProjectCreationViewModel) {
+fun ProjectScreen(viewModel: ProjectCreationViewModel, navController: NavController) {
     val state = viewModel.state.value
     val name = viewModel.name.value
     val projects = listOf(
