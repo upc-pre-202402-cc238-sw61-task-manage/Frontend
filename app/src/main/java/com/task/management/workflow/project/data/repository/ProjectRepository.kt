@@ -14,19 +14,19 @@ class ProjectRepository(
     private val projectService: ProjectService,
     private val projectDao: ProjectDao
 ) {
-    suspend fun insert(projectId: Long, name: String, description: String, member: String, leader: String) =
+    suspend fun insert(projectId: Long, title: String, description: String, member: String, leader: String, createdAt: String) =
         withContext(Dispatchers.IO) {
-            projectDao.insertProject(ProjectEntity(projectId, name, description, member, leader))
+            projectDao.insertProject(ProjectEntity(projectId, title, description, member, leader, createdAt))
         }
 
-    suspend fun delete(projectId: Long, name: String, description: String, member: String, leader: String) =
+    suspend fun delete(projectId: Long, title: String, description: String, member: String, leader: String, createdAt: String) =
         withContext(Dispatchers.IO) {
-            projectDao.deleteProject(ProjectEntity(projectId, name, description, member, leader))
+            projectDao.deleteProject(ProjectEntity(projectId, title, description, member, leader, createdAt))
         }
 
-    suspend fun update(projectId: Long, name: String, description: String, member: String, leader: String) =
+    suspend fun update(projectId: Long, title: String, description: String, member: String, leader: String, createdAt: String) =
         withContext(Dispatchers.IO) {
-            projectDao.updateProject(ProjectEntity(projectId, name, description, member, leader))
+            projectDao.updateProject(ProjectEntity(projectId, title, description, member, leader, createdAt))
         }
 
     suspend fun getProjects(): Resource<List<Project>> = withContext(Dispatchers.IO) {
@@ -43,6 +43,19 @@ class ProjectRepository(
             return@withContext Resource.Error(message = response.body()?.error ?: "")
         }
         return@withContext Resource.Error(message = "Data not found")
+    }
+
+    suspend fun getProjectFromDatabase(): List<Project> = withContext(Dispatchers.IO) {
+        val projects = projectDao.getProjects()
+        return@withContext projects.map { projectEntity: ProjectEntity ->
+            Project(
+                projectEntity.title,
+                projectEntity.description,
+                projectEntity.member,
+                projectEntity.leader,
+                projectEntity.createdAt
+            )
+        }
     }
 
 }

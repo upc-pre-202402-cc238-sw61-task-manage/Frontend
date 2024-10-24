@@ -1,16 +1,25 @@
 package com.task.management.workflow.iam.presentation.sign_up
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -24,102 +33,126 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     val user = viewModel.user.value
-    val roles = listOf("ROLE_USER", "ROLE_ADMIN")
-    var selectedRole = viewModel.roles.collectAsState().value
-    selectedRole = selectedRole.ifEmpty { roles[0] }
-    val expanded = remember { mutableStateOf(false) }
+    var roles = listOf("ROLE_USER", "ROLE_ADMIN")
+    var mSelectedText by remember { mutableStateOf(roles[0].toString()) }
+    var expanded by remember { mutableStateOf(false) }
+    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
 
-    Scaffold() { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    val icon = if (expanded)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    Scaffold { paddingValues ->
+        Box(
+            modifier = Modifier.padding(32.dp),
+            contentAlignment = Alignment.Center
         ) {
-            OutlinedTextField(
-                value = viewModel.username.collectAsState().value,
-                onValueChange = { viewModel.onUsernameChanged(it) },
-                label = { Text("Username") },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            )
-            OutlinedTextField(
-                value = viewModel.password.collectAsState().value,
-                onValueChange = { viewModel.onPasswordChanged(it) },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            )
-
-
-            ExposedDropdownMenuBox(
-                expanded = expanded.value,
-                onExpandedChange = { expanded.value = !expanded.value }
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                    OutlinedTextField(
-                        value = selectedRole,
-                        onValueChange = { },
-                        readOnly = true,
-                        label = { Text("Role") },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally)
-                    )
-                DropdownMenu(
-                        expanded = expanded.value,
-                    onDismissRequest = { expanded.value = false }
-                ) {
-                    roles.forEach { role ->
-                        DropdownMenuItem(
-                            text = { Text(role) },
-                            onClick = {
-                                selectedRole = role
-                                viewModel.onRolesChanged(selectedRole)
-                                    expanded.value = false
-                            }
+                Text("Sign up", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+                AsyncImage(
+                    model = "https://raw.githubusercontent.com/upc-pre-202402-cc238-sw61-task-manage/Workflow-Report/refs/heads/main/images/styles/logo-workflow.png",
+                    contentDescription = "Workflow logo",
+                    modifier = Modifier.size(120.dp)
+                )
+                OutlinedTextField(
+                    value = viewModel.username.collectAsState().value,
+                    onValueChange = { viewModel.onUsernameChanged(it) },
+                    label = { Text("Username", color = MaterialTheme.colorScheme.primary) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                )
+                OutlinedTextField(
+                    value = viewModel.password.collectAsState().value,
+                    onValueChange = { viewModel.onPasswordChanged(it) },
+                    label = { Text("Password", color = MaterialTheme.colorScheme.primary) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                )
+
+                OutlinedTextField(
+                    value = mSelectedText,
+                    onValueChange = { mSelectedText = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = { expanded = !expanded }
                         )
+                        .onGloballyPositioned { coordinates ->
+                            // This value is used to assign to
+                            // the DropDown the same width
+                            mTextFieldSize = coordinates.size.toSize()
+                        },
+                    readOnly = true,
+                    label = {Text("Choose your roles")},
+                    trailingIcon = {
+                        Icon(icon,"contentDescription",
+                            Modifier.clickable { expanded = !expanded })
                     }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current){mTextFieldSize.width.toDp()})
+                ) {
+                    roles.forEach { label ->
+                        DropdownMenuItem(onClick = {
+                            mSelectedText = label
+                            viewModel.onRolesChanged(label)
+                            expanded = false
+                        },
+                            text = { Text(label) })
+                        }
                 }
-            }
 
-            OutlinedButton(
-                onClick = { viewModel.signUp() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Text("Sign in")
-            }
 
-            OutlinedButton(modifier = Modifier.align(Alignment.CenterHorizontally), onClick = {
-                navController.navigate("signIn")
-            }) {
-                Text("Already have an account? Sign in")
-            }
+                OutlinedButton(
+                    onClick = { viewModel.signUp() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Sign in", color = MaterialTheme.colorScheme.secondary)
+                }
 
-            if (user.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else if (user.error.isNotEmpty()) {
-                Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else {
+                OutlinedButton(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally), onClick = {
+                    navController.navigate("signIn")
+                }) {
+                    Text("Already have an account? Sign in")
+                }
+
+                if (user.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                } else if (user.error.isNotEmpty()) {
+                    Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
                 user.data?.let {
                     LaunchedEffect(it) {
-                        navController.navigate("packageList")
+                        navController.navigate("signIn")
                     }
                 }
             }

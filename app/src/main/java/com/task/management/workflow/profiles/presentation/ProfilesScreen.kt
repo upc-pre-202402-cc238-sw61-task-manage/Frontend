@@ -1,4 +1,4 @@
-package com.task.management.workflow.profiles
+package com.task.management.workflow.profiles.presentation
 
 import android.R
 import androidx.compose.foundation.Image
@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight

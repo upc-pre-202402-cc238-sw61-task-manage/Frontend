@@ -4,5 +4,6 @@ data class Project (
     val title: String,
     val description: String,
     val member: String,
-    val leader: String
+    val leader: String,
+    val createdAt: String
 )

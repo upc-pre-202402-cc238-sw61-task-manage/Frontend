@@ -55,13 +55,13 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
     fun getAllProjects() {
         _state.value = ProjectCreationState(isLoading = true)
         viewModelScope.launch {
-            val result = repository.getProjects()
-            if (result is Resource.Success) {
-                _state.value = ProjectCreationState(projects = result.data)
-            } else {
-                _state.value = ProjectCreationState(error = result.message ?: "An error occurred")
-            }
+            val result = repository.getProjectFromDatabase()
+            _state.value = ProjectCreationState(projects = result)
         }
+    }
+
+    init {
+        getAllProjects()
     }
 
     fun createProject(id: Long, project: Project) {
@@ -71,7 +71,8 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
                 project.title,
                 project.description,
                 project.member,
-                project.leader
+                project.leader,
+                project.createdAt
             )
         }
     }
@@ -89,7 +90,8 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
                 project.title,
                 project.description,
                 project.member,
-                project.leader
+                project.leader,
+                project.createdAt
             )
         }
     }
@@ -100,7 +102,8 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
             project.title,
             project.description,
             project.member,
-            project.leader
+            project.leader,
+            project.createdAt
         )
     }
 }
