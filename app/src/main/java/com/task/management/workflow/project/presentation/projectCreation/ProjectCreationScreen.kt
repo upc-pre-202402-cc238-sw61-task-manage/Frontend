@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.task.management.workflow.project.domain.Project
+import java.util.Date
 
 @Composable
 fun ProjectScreen(viewModel: ProjectCreationViewModel, navController: NavController) {
@@ -64,41 +65,21 @@ fun ProjectScreen(viewModel: ProjectCreationViewModel, navController: NavControl
                         description = description,
                         member = "",
                         leader = "",
-                        createdAt = ""
+                        createdAt = Date().toString()
                     )
                     viewModel.createProject(0, project)
                 }
             ) {
                 Text(text = "Create Project")
             }
-            LazyColumn {
-                state.projects?.let { projects ->
-                    items(projects.size) { index ->
-                        val project = projects[index]
-                        ProjectCard(project = project, onClick = {  })
-                    }
+            Button(
+                modifier = Modifier.padding(6.dp),
+                onClick = {
+                    navController.navigate("projectList")
                 }
+            ) {
+                Text(text = "List of Projects")
             }
-        }
-    }
-}
-
-@Composable
-fun ProjectCard(project: Project, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = project.title)
-            Text(text = project.description)
-            Text(text = "Member: ${project.member}")
-            Text(text = "Leader: ${project.leader}")
-            Text(text = "Created At: ${project.createdAt}")
         }
     }
 }

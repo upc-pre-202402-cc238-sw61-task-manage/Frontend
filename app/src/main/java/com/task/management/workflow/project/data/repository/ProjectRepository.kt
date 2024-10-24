@@ -45,4 +45,17 @@ class ProjectRepository(
         return@withContext Resource.Error(message = "Data not found")
     }
 
+    suspend fun getProjectFromDatabase(): List<Project> = withContext(Dispatchers.IO) {
+        val projects = projectDao.getProjects()
+        return@withContext projects.map { projectEntity: ProjectEntity ->
+            Project(
+                projectEntity.title,
+                projectEntity.description,
+                projectEntity.member,
+                projectEntity.leader,
+                projectEntity.createdAt
+            )
+        }
+    }
+
 }
