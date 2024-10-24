@@ -19,6 +19,7 @@ import com.task.management.workflow.iam.data.remote.AuthInterceptor
 import com.task.management.workflow.iam.data.remote.IAMService
 import com.task.management.workflow.iam.data.remote.TokenProvider
 import com.task.management.workflow.iam.data.repository.IAMRepository
+import com.task.management.workflow.iam.presentation.account_selector.AccountSelectorScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
@@ -55,8 +56,8 @@ class MainActivity : ComponentActivity() {
             .build()
 
         // IAM
-        val signInViewModel = SignInViewModel(IAMRepository(iamService), tokenProvider)
-        val signUpViewModel = SignUpViewModel(IAMRepository(iamService))
+        val signInViewModel = SignInViewModel(IAMRepository(iamService, dao.getAccountDao()), tokenProvider)
+        val signUpViewModel = SignUpViewModel(IAMRepository(iamService, dao.getAccountDao()))
 
         // Calendar
         val calendarService = retrofit.create(PackageService::class.java)
@@ -71,14 +72,19 @@ class MainActivity : ComponentActivity() {
         val taskRepository = TaskRepository(taskService, dao.getTaskDao())
         val taskViewModel = TaskListViewModel(taskRepository)
 
+        //AccountSelector
+
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WorkflowTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "signIn") {
+                NavHost(navController = navController, startDestination = "accountSelector") {
                     //Home is only for testing purposes. It won't be used on the app
                     composable("home") { HomeScreen(navController) }
+                    composable("accountSelector") { AccountSelectorScreen(signInViewModel, navController) }
                     composable("signIn") { SignInScreen(signInViewModel, navController) }
                     composable("signUp") { SignUpScreen(signUpViewModel, navController) }
                     composable("calendar") { PackageListEventScreen(calendarViewModel, navController) }
