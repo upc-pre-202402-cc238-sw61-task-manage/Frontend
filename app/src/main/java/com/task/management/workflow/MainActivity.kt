@@ -25,6 +25,9 @@ import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpViewModel
 import com.task.management.workflow.profiles.TeammateView
 import com.task.management.workflow.project.data.remote.ProjectService
+import com.task.management.workflow.project.data.repository.ProjectRepository
+import com.task.management.workflow.project.presentation.projectCreation.ProjectCreationViewModel
+import com.task.management.workflow.project.presentation.projectCreation.ProjectScreen
 import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.presentation.TaskCreationScreen
@@ -65,6 +68,8 @@ class MainActivity : ComponentActivity() {
 
         // Project
         val projectService = retrofit.create(ProjectService::class.java)
+        val projectRepository = ProjectRepository(projectService, dao.getProjectDao())
+        val projectViewModel = ProjectCreationViewModel(projectRepository)
 
         //Task
         val taskService = retrofit.create(TaskService::class.java)
@@ -84,7 +89,7 @@ class MainActivity : ComponentActivity() {
                     composable("calendar") { PackageListEventScreen(calendarViewModel, navController) }
                     composable("taskList") { TaskListScreen(taskViewModel,navController) }
                     composable("taskCreation") { TaskCreationScreen(taskViewModel, navController) }
-                    composable("projectCreation") {  }
+                    composable("projectCreation") { ProjectScreen(projectViewModel, navController) }
                     composable("profiles") { TeammateView(navController) }
                 }
             }
