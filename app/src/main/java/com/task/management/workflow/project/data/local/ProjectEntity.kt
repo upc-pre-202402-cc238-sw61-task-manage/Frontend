@@ -10,11 +10,13 @@ data class ProjectEntity (
     @ColumnInfo("project_id")
     val projectId: Long,
     @ColumnInfo("project_name")
-    val name: String,
+    val title: String,
     @ColumnInfo("project_description")
     val description: String,
     @ColumnInfo("project_member")
     val member: String,
     @ColumnInfo("project_leader")
-    val leader: String
+    val leader: String,
+    @ColumnInfo("project_creation_date")
+    val createdAt: String,
 )
