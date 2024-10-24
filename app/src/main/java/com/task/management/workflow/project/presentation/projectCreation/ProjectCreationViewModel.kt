@@ -71,8 +71,10 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
                 project.title,
                 project.description,
                 project.member,
-                project.leader
+                project.leader,
+                project.createdAt
             )
+            getAllProjects()
         }
     }
 
@@ -89,7 +91,8 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
                 project.title,
                 project.description,
                 project.member,
-                project.leader
+                project.leader,
+                project.createdAt
             )
         }
     }
@@ -100,7 +103,8 @@ class ProjectCreationViewModel(private val repository: ProjectRepository) : View
             project.title,
             project.description,
             project.member,
-            project.leader
+            project.leader,
+            project.createdAt
         )
     }
 }
