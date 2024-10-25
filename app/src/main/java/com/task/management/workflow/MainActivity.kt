@@ -23,6 +23,9 @@ import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpViewModel
+import com.task.management.workflow.profiles.data.remote.ProfileService
+import com.task.management.workflow.profiles.data.repository.ProfileRepository
+import com.task.management.workflow.profiles.presentation.ProfilesViewModel
 import com.task.management.workflow.profiles.presentation.TeammateView
 import com.task.management.workflow.project.data.remote.ProjectService
 import com.task.management.workflow.task.data.remote.TaskService
@@ -71,6 +74,11 @@ class MainActivity : ComponentActivity() {
         val taskRepository = TaskRepository(taskService, dao.getTaskDao())
         val taskViewModel = TaskListViewModel(taskRepository)
 
+        // Profiles
+        val profileService = retrofit.create(ProfileService::class.java)
+        val profilesRepository = ProfileRepository(profileService)
+        val profilesViewModel = ProfilesViewModel(profilesRepository, signInViewModel)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -85,7 +93,7 @@ class MainActivity : ComponentActivity() {
                     composable("taskList") { TaskListScreen(taskViewModel,navController) }
                     composable("taskCreation") { TaskCreationScreen(taskViewModel, navController) }
                     composable("projectCreation") {  }
-                    composable("profiles") { TeammateView(navController) }
+                    composable("profiles") { TeammateView(navController, profilesViewModel) }
                 }
             }
         }
