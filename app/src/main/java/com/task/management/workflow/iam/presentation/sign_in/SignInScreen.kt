@@ -1,5 +1,6 @@
 package com.task.management.workflow.iam.presentation.sign_in
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.bumptech.glide.Glide
 import com.skydoves.landscapist.glide.GlideImage
+import com.task.management.workflow.R
+import com.task.management.workflow.common.constants.NavigationConstants
 
 @Composable
 fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
@@ -46,8 +50,8 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
             ) {
                 Text("Sign in", style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.primary)
-                AsyncImage(
-                    model = "https://raw.githubusercontent.com/upc-pre-202402-cc238-sw61-task-manage/Workflow-Report/refs/heads/main/images/styles/logo-workflow.png",
+                Image(
+                    painter = painterResource(id = R.drawable.workflow_logo),
                     contentDescription = "Workflow logo",
                     modifier = Modifier.size(120.dp)
                 )
@@ -81,7 +85,7 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
 
                 OutlinedButton(
                     onClick = {
-                        navController.navigate("signUp") // Navigate to SignUpScreen
+                        navController.navigate(NavigationConstants.SIGN_UP_PATH) // Navigate to SignUpScreen
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -98,7 +102,7 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
                     user.data?.let {
                         LaunchedEffect(it) {
                             viewModel.saveInDatabase()
-                            navController.navigate("home")
+                            navController.navigate(NavigationConstants.TASK_LIST_PATH)
                         }
                     }
                 }

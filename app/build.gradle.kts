@@ -85,9 +85,13 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
+
+    implementation (libs.androidx.material.icons.extended)
+    implementation(libs.androidx.navigation.compose.v253)
+
     // The view calendar library for Android
-    implementation("com.kizitonwose.calendar:view:2.6.0")
+    implementation(libs.view)
     // The compose calendar library for Android
-    implementation("com.kizitonwose.calendar:compose:2.6.0")
-    implementation ("com.applandeo:material-calendar-view:1.9.2")
+    implementation(libs.compose)
+    implementation (libs.material.calendar.view)
 }
