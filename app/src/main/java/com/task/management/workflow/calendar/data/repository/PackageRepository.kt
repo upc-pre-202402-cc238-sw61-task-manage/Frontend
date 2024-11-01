@@ -36,9 +36,7 @@ suspend fun getPackages(userId: Int): Resource<List<EventPackage>> = withContext
                 userId = event.userId,
                 title = event.title,
                 description = event.description,
-                day = event.day,
-                month = event.month,
-                year = event.year
+                dueDate = event.dueDate
             )
             val response = service.addEvent(request)
             if (response.isSuccessful) {

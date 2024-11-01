@@ -10,6 +10,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface TaskService {
+
     @GET("api/v1/tasks/{taskId}")
     suspend fun getTask(@Path("taskId") taskId: Long): Response<TaskDto>
 
