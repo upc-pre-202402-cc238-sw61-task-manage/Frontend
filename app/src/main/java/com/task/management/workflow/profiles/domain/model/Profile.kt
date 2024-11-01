@@ -1,8 +1,8 @@
 package com.task.management.workflow.profiles.domain.model
 
 data class Profile(
-    val name: String,
-    val company : String,
-    val age : Int,
+    val firstName: String,
+    val lastName: String,
     val email : String,
+    val phoneNumber : String,
 )

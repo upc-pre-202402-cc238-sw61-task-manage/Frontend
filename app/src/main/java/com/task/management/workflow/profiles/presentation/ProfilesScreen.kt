@@ -1,12 +1,13 @@
 package com.task.management.workflow.profiles.presentation
 
-import android.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -18,9 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.task.management.workflow.R
 
 @Composable
-fun TeammateView(navController: NavController) {
+fun TeammateView(navController: NavController, profilesViewModel: ProfilesViewModel) {
+    val profile = profilesViewModel.profile
+
+    LaunchedEffect(Unit) {
+        profilesViewModel.getProfile()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -28,16 +35,26 @@ fun TeammateView(navController: NavController) {
     ) {
         TopBar()
         Spacer(modifier = Modifier.height(16.dp))
+        if (profile.value.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(36.dp)
+            )
+        }
+        if (profile.value.error != null) {
+            Text(
+                text = "An error occurred: ${profile.value.error}",
+                modifier = Modifier.padding(16.dp)
+            )
+        }
         TeammateCard(
             imageUrl = "https://www.pngall.com/wp-content/uploads/5/Profile.png", // URL temporal para la imagen
-            name = "Roberto Ruis",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do architecto beatae...",
-            company = "Company Inc.",
-            age = 25,
-            tasks = listOf(
-                "Task 1 - 10/10/202X",
-                "Task 2 - 12/12/202X"
-            )
+            firstName = profile.value.data?.firstName ?: "First Name",
+            lastName = profile.value.data?.lastName ?: "Last Name",
+            email = profile.value.data?.email ?: "Email",
+            phoneNumber = profile.value.data?.phoneNumber ?: "Phone Number",
+            tasks = listOf("Task 1", "Task 2", "Task 3")
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
@@ -62,7 +79,7 @@ fun TopBar() {
         actions = {
             IconButton(onClick = { /* TODO: Search action */ }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_menu_search),
+                    painter = painterResource(id = R.drawable.img_perfil),
                     contentDescription = "Search",
                     tint = Color.White
                 )
@@ -74,10 +91,10 @@ fun TopBar() {
 @Composable
 fun TeammateCard(
     imageUrl: String,
-    name: String,
-    company: String,
-    age: Int,
-    description: String,
+    firstName: String,
+    lastName: String,
+    email: String,
+    phoneNumber: String,
     tasks: List<String>
 ) {
     Card(
@@ -102,12 +119,13 @@ fun TeammateCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Nombre y descripción
-            Text(text = name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text(text = "Age: $age", fontSize = 14.sp)
+            Text(text = firstName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(text = lastName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = description, fontSize = 14.sp, color = Color.Gray)
+            Text(text = email, fontSize = 14.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "Company: $company", fontSize = 14.sp)
+            Text(text = "email: $phoneNumber", fontSize = 14.sp)
             Spacer(modifier = Modifier.height(16.dp))
             // Lista de tareas
             Text(text = "Tasks list", fontWeight = FontWeight.Bold, fontSize = 16.sp)

@@ -7,25 +7,28 @@ import com.task.management.workflow.profiles.data.remote.dataprofile.ProfileResp
 import com.task.management.workflow.profiles.domain.model.Profile
 import retrofit2.Response
 
-class ProfileRepository (private val service: ProfileService) {
+class ProfileRepository(private val service: ProfileService) {
 
-
-    suspend fun DataProfile(profileRequest: ProfileRequest): Resource<ProfileResponse> {
+    suspend fun getProfile(profileId: Long): Resource<ProfileResponse> {
         return try {
-            val response = service.DataProfile(profileRequest)
+            val response = service.getProfileById(profileId)
             handleResponse(response)
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "An error occurred")
+            Resource.Error<ProfileResponse>(e.message ?: "An error occurred")
         }
     }
 
     suspend fun updateProfile(profile: Profile) {
         val request = ProfileRequest(
-            name = profile.name,
-            company = profile.company
+            profile.firstName,
+            profile.lastName,
+            profile.email,
+            profile.phoneNumber,
+            1
         )
-        service.updateProfile(request)
+        //service.updateProfile(request)
     }
+
     private fun <T> handleResponse(response: Response<T>): Resource<T> {
         return if (response.isSuccessful) {
             Resource.Success(response.body()!!)
