@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,10 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -39,11 +42,13 @@ import androidx.navigation.NavController
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
+import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.task.management.workflow.calendar.domain.EventPackage
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -70,6 +75,8 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
     var showDialogAddEvent by remember { mutableStateOf(false) }
     var showDialogDeleteEvent by remember { mutableStateOf(false) }
     var eventToDelete by remember { mutableStateOf<EventPackage?>(null) }
+    var showDialogEditEvent by remember { mutableStateOf(false) }
+    var eventToEdit by remember { mutableStateOf<EventPackage?>(null) }
 
     //Lista de fechas de eventos para calendario
     val eventsDate = viewModel.eventDates
@@ -110,9 +117,14 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
             )
 
             //Calendario
+            var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
             HorizontalCalendar(
                 state = estate,
-                dayContent = { Day(it, eventsDate, highlightedDates2) },
+                dayContent = { day ->
+                    Day(day, eventsDate, highlightedDates2,  isSelected = selectedDate == day.date) {
+                            day -> selectedDate = if (selectedDate == day.date) null else day.date
+                    }
+                             },
                 monthContainer = { _, container ->
                     val configuration = LocalConfiguration.current
                     val screenWidth = configuration.screenWidthDp.dp
@@ -123,7 +135,7 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                             .clip(shape = RoundedCornerShape(8.dp))
                             .border(
                                 color = color,
-                                width = 1.dp,
+                                width = 2.dp,
                                 shape = RoundedCornerShape(8.dp)
                             )
                     ) {
@@ -131,7 +143,8 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                     }
                 },
                 monthHeader = {
-                    DaysOfWeekTitle(daysOfWeek = daysOfWeek) // Use the title as month header
+                    MonthHeader(month = estate.firstVisibleMonth.yearMonth)
+                    DaysOfWeekTitle(daysOfWeek = daysOfWeek)// Use the title as month header
                 }
             )
 
@@ -165,6 +178,17 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                                     Text(text = event.title, fontSize = 16.sp, color = color, fontWeight = FontWeight.Bold)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     IconButton(onClick = {
+                                        eventToEdit = event
+                                        showDialogEditEvent = true
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Edit,
+                                            tint = Color.Blue,
+                                            contentDescription = "Editar evento"
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    IconButton(onClick = {
                                         eventToDelete = event
                                         showDialogDeleteEvent = true}) {
                                         Icon(
@@ -173,6 +197,7 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                                             contentDescription = "Eliminar evento"
                                         )
                                     }
+
                                 }
 
                                 Text(text = event.dueDate, color = color)
@@ -204,6 +229,17 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
         )
     }
 
+    if (showDialogEditEvent && eventToEdit != null) {
+        EditEventDialog(
+            event = eventToEdit!!,
+            onDismiss = { showDialogEditEvent = false },
+            onConfirm = { title, description, duedate ->
+                viewModel.editEvent(eventToEdit!!.id, title, description, duedate)
+                showDialogEditEvent = false
+            }
+        )
+    }
+
     if(showDialogDeleteEvent){
         DeleteEventDialog(
             eventTitle = eventToDelete!!.title,
@@ -221,7 +257,7 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Day(day: CalendarDay, eventsDates: List<LocalDate>, highlightedDates2: List<LocalDate>) {
+fun Day(day: CalendarDay, eventsDates: List<LocalDate>, highlightedDates2: List<LocalDate>, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
 
     val color = Color(25, 23, 89)
 
@@ -246,10 +282,14 @@ fun Day(day: CalendarDay, eventsDates: List<LocalDate>, highlightedDates2: List<
     Box(
         modifier = Modifier
             .aspectRatio(1f)
-            .background(backgroundColor)
             .padding(2.dp)
             .shadow(1.dp, shape = RoundedCornerShape(1.dp))
-            .clip(RoundedCornerShape(8.dp)),
+            .background(color = if (isSelected) Color.Green else backgroundColor)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(
+                enabled = day.position == DayPosition.MonthDate,
+                onClick = { onClick(day) }
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -271,4 +311,17 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
             )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun MonthHeader(month: YearMonth) {
+    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+    Text(
+        text = month.format(formatter),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        textAlign = TextAlign.Center
+    )
 }

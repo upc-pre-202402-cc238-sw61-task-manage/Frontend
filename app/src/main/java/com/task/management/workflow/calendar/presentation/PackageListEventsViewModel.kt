@@ -87,4 +87,19 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
         }
     }
 
+    fun editEvent(eventId: Int, title: String, description: String, duedate: String){
+        _events.value = UIState(isLoading = true)
+        viewModelScope.launch {
+            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, duedate)
+            val result = repository.editEvent(eventId, newEvent)
+            if (result is Resource.Success) {
+                getEventsPackages()
+            } else {
+                _events.value = UIState(error = result.message ?: "An error occurred")
+            }
+        }
+    }
+
+
+
 }
