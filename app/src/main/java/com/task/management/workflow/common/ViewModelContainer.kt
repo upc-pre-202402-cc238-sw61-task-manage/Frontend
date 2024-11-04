@@ -41,7 +41,7 @@ class ViewModelContainer(context: Context) {
     val signInViewModel = SignInViewModel(iamRepository, tokenProvider)
     val signUpViewModel = SignUpViewModel(iamRepository)
     @RequiresApi(Build.VERSION_CODES.O)
-    val calendarViewModel = PackageListEventsViewModel(packageRepository)
+    val calendarViewModel = PackageListEventsViewModel(packageRepository, taskRepository)
     val taskViewModel = TaskListViewModel(taskRepository)
     val profilesViewModel = ProfilesViewModel(profilesRepository, signInViewModel)
 }

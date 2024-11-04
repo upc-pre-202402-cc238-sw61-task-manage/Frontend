@@ -17,13 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -56,17 +54,6 @@ import java.util.Locale
 @Composable
 fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController: NavController) {
 
-    val highlightedDates1 = listOf(
-        LocalDate.of(2024, 10, 23),
-        LocalDate.of(2024, 11, 5)
-    )
-
-    val highlightedDates2 = listOf(
-        LocalDate.of(2024, 12, 25),
-        LocalDate.of(2024, 12, 31),
-        LocalDate.of(2024, 10, 23)
-    )
-
     val events = viewModel.events.value
     val userId = viewModel.userId.value
     val color = Color(25, 23, 89)
@@ -80,6 +67,7 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
 
     //Lista de fechas de eventos para calendario
     val eventsDate = viewModel.eventDates
+    val tasksDate = viewModel.taskDates
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) } // Adjust as needed
     val endMonth = remember { currentMonth.plusMonths(100) } // Adjust as needed
@@ -121,10 +109,9 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
             HorizontalCalendar(
                 state = estate,
                 dayContent = { day ->
-                    Day(day, eventsDate, highlightedDates2,  isSelected = selectedDate == day.date) {
+                    Day(day, eventsDate, tasksDate,  isSelected = selectedDate == day.date) {
                             day -> selectedDate = if (selectedDate == day.date) null else day.date
-                    }
-                             },
+                    }},
                 monthContainer = { _, container ->
                     val configuration = LocalConfiguration.current
                     val screenWidth = configuration.screenWidthDp.dp
@@ -257,25 +244,27 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Day(day: CalendarDay, eventsDates: List<LocalDate>, highlightedDates2: List<LocalDate>, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
+fun Day(day: CalendarDay, eventsDates: List<LocalDate>, tasksDates: List<LocalDate>, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
 
-    val color = Color(25, 23, 89)
+    val color = Color(25, 23, 89) // color events
+    val color2 = Color(49, 114, 112) // color tasks
+    val color3 = Color(78, 2, 80)
 
     val isHighlighted1 = eventsDates.contains(day.date)
-    val isHighlighted2 = highlightedDates2.contains(day.date)
+    val isHighlighted2 = tasksDates.contains(day.date)
     val isHighlightedBoth = isHighlighted1 && isHighlighted2
 
     val backgroundColor = when {
-        isHighlightedBoth -> Color.Magenta
+        isHighlightedBoth -> color3
         isHighlighted1 -> color
-        isHighlighted2 -> Color.Green
+        isHighlighted2 -> color2
         else -> Color.Transparent
     }
 
     val textColor = when {
         isHighlightedBoth -> Color.White
         isHighlighted1 -> Color.White
-        isHighlighted2 -> Color.Blue
+        isHighlighted2 -> Color.White
         else -> color
     }
 
@@ -284,7 +273,7 @@ fun Day(day: CalendarDay, eventsDates: List<LocalDate>, highlightedDates2: List<
             .aspectRatio(1f)
             .padding(2.dp)
             .shadow(1.dp, shape = RoundedCornerShape(1.dp))
-            .background(color = if (isSelected) Color.Green else backgroundColor)
+            .background(color = if (isSelected) Color(241,135,1) else backgroundColor)
             .clip(RoundedCornerShape(8.dp))
             .clickable(
                 enabled = day.position == DayPosition.MonthDate,

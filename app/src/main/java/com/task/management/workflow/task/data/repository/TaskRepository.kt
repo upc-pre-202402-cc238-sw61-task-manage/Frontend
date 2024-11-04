@@ -138,4 +138,21 @@ class TaskRepository (
         }
     }
 
+    suspend fun getTasksByUserId(taskId: Int): Resource<List<Task>> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getTasksByUserId(taskId)
+            if (response.isSuccessful) {
+                response.body()?.let { tasksDto: List<TaskDto> ->
+                    val tasks = tasksDto.map { taskDto: TaskDto ->
+                        taskDto.toTask()
+                    }.toList()
+                    return@withContext Resource.Success(data = tasks)
+                }
+            }
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message ?: "An error occurred")
+        }
+    }
+
 }

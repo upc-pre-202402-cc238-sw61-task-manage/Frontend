@@ -43,4 +43,8 @@ interface TaskService {
     suspend fun deleteTask(
         @Path("taskId") taskId: Long
     ): Response<Unit>
+
+    //
+    @GET("api/v1/tasks/user/{userId}")
+    suspend fun getTasksByUserId(@Path("userId") userId: Int): Response<List<TaskDto>>
 }

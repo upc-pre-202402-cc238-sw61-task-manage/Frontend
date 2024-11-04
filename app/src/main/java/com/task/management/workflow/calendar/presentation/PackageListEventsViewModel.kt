@@ -14,13 +14,14 @@ import com.task.management.workflow.calendar.domain.CreateEventRequest
 import com.task.management.workflow.calendar.domain.EventPackage
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
+import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
-class PackageListEventsViewModel(private val repository: PackageRepository): ViewModel() {
+class PackageListEventsViewModel(private val repository: PackageRepository, private val repository2: TaskRepository): ViewModel() {
 
     private val _events = mutableStateOf(UIState<List<EventPackage>>())
     val events: State<UIState<List<EventPackage>>> get() = _events
@@ -37,9 +38,14 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
     private val _eventDates = mutableStateListOf<LocalDate>()
     val eventDates: List<LocalDate> get() = _eventDates
 
+    private val _taskDates = mutableStateListOf<LocalDate>()
+    val taskDates: List<LocalDate> get() = _taskDates
+
     fun onUserIdChanged(id: Int){
         _userId.intValue = id
+        getTasksPackages()
         getEventsPackages()
+
     }
 
     private fun getEventsPackages(){
@@ -57,6 +63,24 @@ class PackageListEventsViewModel(private val repository: PackageRepository): Vie
 
             }else{
                 _events.value = UIState(error = result.message?:"An error occurred")
+            }
+        }
+    }
+
+    private fun getTasksPackages(){
+        _tasks.value = UIState(isLoading = true)
+        viewModelScope.launch {
+            val result = repository2.getTasksByUserId(userId.value)
+
+            if(result is Resource.Success){
+                _tasks.value = UIState(data = result.data)
+
+                _taskDates.clear()
+                result.data?.forEach { task ->
+                    val taskDate = task.toLocalDate()
+                    _taskDates.add(taskDate)}
+            }else{
+                _tasks.value = UIState(error = result.message?:"An error occurred")
             }
         }
     }
