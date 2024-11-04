@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.task.management.workflow.calendar.presentation.PackageListEventScreen
 import com.task.management.workflow.common.ViewModelContainer
 import com.task.management.workflow.common.constants.NavigationConstants
+import com.task.management.workflow.iam.presentation.account_selector.AccountSelectorScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.profiles.presentation.TeammateView
@@ -18,8 +19,9 @@ import com.task.management.workflow.task.presentation.TaskListScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationHost(navController: NavHostController, viewModelContainer: ViewModelContainer) {
-    NavHost(navController = navController, startDestination = NavigationConstants.SIGN_IN_PATH) {
+    NavHost(navController = navController, startDestination = NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) {
         composable(NavigationConstants.SIGN_IN_PATH) { SignInScreen(viewModelContainer.signInViewModel, navController) }
+        composable(NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) { AccountSelectorScreen(viewModelContainer.signInViewModel, navController) }
         composable(NavigationConstants.SIGN_UP_PATH) { SignUpScreen(viewModelContainer.signUpViewModel, navController) }
         composable(NavigationConstants.CALENDAR_PATH) { PackageListEventScreen(viewModelContainer.calendarViewModel, navController) }
         composable(NavigationConstants.TASK_LIST_PATH) { TaskListScreen(viewModelContainer.taskViewModel, navController) }

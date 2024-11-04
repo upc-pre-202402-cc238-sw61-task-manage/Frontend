@@ -29,7 +29,8 @@ fun MainScreen(viewModelContainer: ViewModelContainer){
         bottomBar = {
             if (currentRoute !in listOf(
                     NavigationConstants.SIGN_IN_PATH,
-                    NavigationConstants.SIGN_UP_PATH
+                    NavigationConstants.SIGN_UP_PATH,
+                    NavigationConstants.SIGN_ACCOUNT_PICKER_PATH,
                 )
             ) {
                 BottomNavigationView(navController, navigationItem, currentRoute)

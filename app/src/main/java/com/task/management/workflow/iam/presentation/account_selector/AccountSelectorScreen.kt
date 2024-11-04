@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
+import com.task.management.workflow.common.constants.NavigationConstants
 import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 
 @Composable
@@ -38,7 +40,6 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
     var selectedUser = signInViewModel.user.value
     var mSelectedText = remember { mutableStateOf(selectedUser.data?.username ?: "") }
     var expanded by remember { mutableStateOf(false) }
-
 
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
 
@@ -50,6 +51,11 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
     Scaffold(
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
+            LaunchedEffect(Unit) {
+                if (userList.data == null && userList.error == null && userList.isLoading == false) {
+                    navController.navigate(NavigationConstants.SIGN_IN_PATH)
+                }
+            }
             Column {
                 OutlinedTextField(
                     value = mSelectedText.value,

@@ -8,4 +8,5 @@ object NavigationConstants {
     const val PROFILE_PATH = "profiles"
     const val SIGN_IN_PATH = "signIn"
     const val SIGN_UP_PATH = "signUp"
+    const val SIGN_ACCOUNT_PICKER_PATH = "accountPicker"
 }
