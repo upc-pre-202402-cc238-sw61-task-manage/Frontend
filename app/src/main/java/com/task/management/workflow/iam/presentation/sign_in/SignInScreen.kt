@@ -97,6 +97,7 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
                 } else {
                     user.data?.let {
                         LaunchedEffect(it) {
+                            viewModel.saveInDatabase()
                             navController.navigate("home")
                         }
                     }
