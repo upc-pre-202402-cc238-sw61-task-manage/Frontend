@@ -1,6 +1,4 @@
 package com.task.management.workflow.profiles.presentation
-
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -118,7 +116,7 @@ fun EditUserScreen(
                 enabled = isNameValid && isPhoneValid && isCompanyValid,
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Confirmar")
+                Text("Confirm")
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -127,7 +125,7 @@ fun EditUserScreen(
                 onClick = onCancel,
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Cancelar")
+                Text("Cancel")
             }
         }
     }
