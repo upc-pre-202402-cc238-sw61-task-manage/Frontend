@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui.test.android)
     implementation(libs.coil3.coil.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -76,7 +77,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.glide)
@@ -84,4 +84,14 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+
+
+    implementation (libs.androidx.material.icons.extended)
+    implementation(libs.androidx.navigation.compose.v253)
+
+    // The view calendar library for Android
+    implementation(libs.view)
+    // The compose calendar library for Android
+    implementation(libs.compose)
+    implementation (libs.material.calendar.view)
 }
