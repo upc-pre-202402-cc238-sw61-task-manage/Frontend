@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
@@ -20,4 +21,8 @@ interface PackageService {
 
     @DELETE("api/v1/events/{eventId}")
     suspend fun deleteEvent(@Path("eventId") eventId: Int): Response<Void>
+
+    @PUT("api/v1/events/{eventId}")
+    suspend fun editEvent(@Path("eventId") eventId: Int, @Body updatedEvent: CreateEventRequest): Response<Void>
+
 }
