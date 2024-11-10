@@ -1,4 +1,4 @@
-package com.task.management.workflow.task.presentation
+package com.task.management.workflow.task.presentation.taskList
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableLongStateOf
@@ -27,7 +27,7 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
     private val _description = mutableStateOf("")
     val description: State<String> get() = _description
 
-    private val _dueDate = mutableStateOf<String>("")
+    private val _dueDate = mutableStateOf("")
     val dueDate: State<String> get() = _dueDate
 
     private val _userId = mutableLongStateOf(1)
@@ -105,10 +105,6 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
         }
     }
 
-    private fun getTasks() {
-        fetchTasks { repository.getTasks() }
-    }
-
     private fun getTasksFromProject(projectId: Long, status: String? = null) {
         fetchTasks { repository.getTasksByProjectAndStatus(projectId, status) }
     }
@@ -127,7 +123,7 @@ class TaskListViewModel(private val repository: TaskRepository): ViewModel() {
                 projectId = projectId.value,
                 status = TaskStatus.NEW
             )
-            val result = repository.postTask(newTask)
+            repository.postTask(newTask)
         }
     }
 

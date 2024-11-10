@@ -1,4 +1,4 @@
-package com.task.management.workflow.task.presentation
+package com.task.management.workflow.task.presentation.dialogs
 
 
 import android.app.DatePickerDialog
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.task.management.workflow.task.domain.Task
+import com.task.management.workflow.task.presentation.taskList.TaskListViewModel
 import java.util.Calendar
 
 @Composable

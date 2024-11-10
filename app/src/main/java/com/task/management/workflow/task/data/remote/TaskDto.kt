@@ -12,7 +12,6 @@ data class TaskDto(
     var description: String,
     var dueDate: String,
     val projectId: Long,
-    @SerializedName("assignUser")
     var userId: Long,
     var status: TaskStatus
 )

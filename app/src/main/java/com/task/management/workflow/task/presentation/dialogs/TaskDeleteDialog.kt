@@ -1,4 +1,4 @@
-package com.task.management.workflow.task.presentation
+package com.task.management.workflow.task.presentation.dialogs
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

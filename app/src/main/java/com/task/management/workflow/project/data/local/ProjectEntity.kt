@@ -3,6 +3,7 @@ package com.task.management.workflow.project.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.task.management.workflow.project.domain.Project
 
 @Entity(tableName = "projects")
 data class ProjectEntity (
@@ -13,10 +14,14 @@ data class ProjectEntity (
     val title: String,
     @ColumnInfo("project_description")
     val description: String,
-    @ColumnInfo("project_member")
-    val member: String,
     @ColumnInfo("project_leader")
-    val leader: String,
-    @ColumnInfo("project_creation_date")
-    val createdAt: String,
+    val projectLeader: String
 )
+
+fun ProjectEntity.toProject(): Project {
+    return Project(
+        title = title,
+        description = description,
+        leader = projectLeader,
+    )
+}

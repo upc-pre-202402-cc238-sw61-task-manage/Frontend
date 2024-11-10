@@ -3,8 +3,12 @@ package com.task.management.workflow.common.main_screen.presentation
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.task.management.workflow.common.ViewModelContainer
 import com.task.management.workflow.common.constants.NavigationConstants
@@ -21,6 +25,7 @@ fun MainScreen(viewModelContainer: ViewModelContainer){
 
     val navigationItem = listOf(
         BottomNavigationItemMenu.CalendarView,
+        BottomNavigationItemMenu.ProjectView,
         BottomNavigationItemMenu.TaskView,
         BottomNavigationItemMenu.ProfileView
     )
@@ -37,6 +42,10 @@ fun MainScreen(viewModelContainer: ViewModelContainer){
             }
         }
     ) {
-        NavigationHost(navController, viewModelContainer)
+        Box(
+            Modifier.padding(bottom = 88.dp)
+        ){
+            NavigationHost(navController, viewModelContainer)
+        }
     }
 }

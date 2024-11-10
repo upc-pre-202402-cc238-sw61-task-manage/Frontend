@@ -92,7 +92,7 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
                     OutlinedButton(
                         onClick = {
                             signInViewModel.onUsernameChanged(mSelectedText.value)
-                            navController.navigate("signIn")
+                            navController.navigate(NavigationConstants.SIGN_IN_PATH)
                         },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
@@ -100,7 +100,7 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
                     }
                     OutlinedButton(
                         onClick = {
-                            navController.navigate("signUp")
+                            navController.navigate(NavigationConstants.SIGN_UP_PATH)
                         },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {

@@ -1,4 +1,4 @@
-package com.task.management.workflow.task.presentation
+package com.task.management.workflow.task.presentation.dialogs
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Box

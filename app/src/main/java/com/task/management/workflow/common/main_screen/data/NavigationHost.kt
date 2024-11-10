@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.task.management.workflow.calendar.presentation.PackageListEventScreen
 import com.task.management.workflow.common.ViewModelContainer
 import com.task.management.workflow.common.constants.NavigationConstants
@@ -13,8 +15,10 @@ import com.task.management.workflow.iam.presentation.account_selector.AccountSel
 import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.profiles.presentation.TeammateView
-import com.task.management.workflow.task.presentation.TaskCreationScreen
-import com.task.management.workflow.task.presentation.TaskListScreen
+import com.task.management.workflow.project.presentation.projectDetails.ProjectDetailScreen
+import com.task.management.workflow.project.presentation.projectList.ProjectListScreen
+import com.task.management.workflow.task.presentation.dialogs.TaskCreationScreen
+import com.task.management.workflow.task.presentation.taskList.TaskListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -26,7 +30,14 @@ fun NavigationHost(navController: NavHostController, viewModelContainer: ViewMod
         composable(NavigationConstants.CALENDAR_PATH) { PackageListEventScreen(viewModelContainer.calendarViewModel, navController) }
         composable(NavigationConstants.TASK_LIST_PATH) { TaskListScreen(viewModelContainer.taskViewModel, navController) }
         composable(NavigationConstants.TASK_CREATION_PATH) { TaskCreationScreen(viewModelContainer.taskViewModel, navController) }
-        composable(NavigationConstants.PROJECT_CREATION_PATH) {  }
+        composable(NavigationConstants.PROJECT_LIST_PATH) { ProjectListScreen(viewModelContainer.projectViewModel, navController) }
+        composable(
+            route = "${NavigationConstants.PROJECT_DETAILS_PATH}/{projectId}",
+            arguments = listOf(navArgument("projectId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
+            ProjectDetailScreen(viewModelContainer.projectViewModel, viewModelContainer.projectUserViewModel, navController, projectId)
+        }
         composable(NavigationConstants.PROFILE_PATH) { TeammateView(navController, viewModelContainer.profilesViewModel) }
     }
 }
