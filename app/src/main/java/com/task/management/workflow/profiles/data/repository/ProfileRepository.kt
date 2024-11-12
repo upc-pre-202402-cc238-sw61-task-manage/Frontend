@@ -26,7 +26,7 @@ class ProfileRepository(private val service: ProfileService) {
             profile.phoneNumber,
             1
         )
-        //service.updateProfile(request)
+        service.updateProfile(1, request)
     }
 
     private fun <T> handleResponse(response: Response<T>): Resource<T> {
