@@ -3,9 +3,9 @@ package com.task.management.workflow.calendar.data.remote
 import com.task.management.workflow.calendar.domain.EventPackage
 
 data class CalendarDto(
-    val id: Int,
-    val projectId: Int,
-    val userId: Int,
+    val id: Long,
+    val projectId: Long,
+    val userId: Long,
     val title: String,
     val description: String,
     var dueDate: String

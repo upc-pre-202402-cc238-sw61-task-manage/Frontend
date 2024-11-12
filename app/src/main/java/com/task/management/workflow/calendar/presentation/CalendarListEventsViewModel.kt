@@ -99,7 +99,7 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
         }
     }
 
-    fun removeEvent(eventId: Int) {
+    fun removeEvent(eventId: Long) {
         viewModelScope.launch {
             val result = repository.deleteEvent(eventId)
             if (result is Resource.Success) {
@@ -110,7 +110,7 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
         }
     }
 
-    fun editEvent(eventId: Int, title: String, description: String, dueDate: String){
+    fun editEvent(eventId: Long, title: String, description: String, dueDate: String){
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
             val newEvent = CreateEventRequest(0, _userId.value, title, description, dueDate)

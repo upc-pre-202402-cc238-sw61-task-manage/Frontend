@@ -50,7 +50,7 @@ class CalendarRepository(private val service: CalendarService) {
         }
     }
 
-    suspend fun deleteEvent(eventId: Int): Resource<Unit>{
+    suspend fun deleteEvent(eventId: Long): Resource<Unit>{
         return try {
             val response = service.deleteEvent(eventId)
             if (response.isSuccessful) {
@@ -63,7 +63,7 @@ class CalendarRepository(private val service: CalendarService) {
         }
     }
 
-    suspend fun editEvent(eventId: Int, event: CreateEventRequest): Resource<Unit>{
+    suspend fun editEvent(eventId: Long, event: CreateEventRequest): Resource<Unit>{
         return try {
 
             val response = service.editEvent(eventId, event)
