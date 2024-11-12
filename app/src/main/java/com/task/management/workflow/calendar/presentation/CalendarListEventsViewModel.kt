@@ -28,8 +28,8 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
     private val _tasks = mutableStateOf(UIState<List<Task>>())
     val tasks: State<UIState<List<Task>>> get() = _tasks
 
-    private val _userId = mutableStateOf(UserSession.userId.value?.toInt() ?: 0)
-    val userId: State<Int> get() = _userId
+    private val _userId = mutableStateOf(UserSession.userId.value ?: 0)
+    val userId: State<Long> get() = _userId
 
     val calendar: Calendar = Calendar.getInstance()
 
@@ -40,7 +40,7 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
     private val _taskDates = mutableStateListOf<LocalDate>()
     val taskDates: List<LocalDate> get() = _taskDates
 
-    fun onUserIdChanged(id: Int){
+    fun onUserIdChanged(id: Long){
         _userId.value = id
         getTasksPackages()
         getEventsPackages()

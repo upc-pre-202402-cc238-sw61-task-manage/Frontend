@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 class CalendarRepository(private val service: CalendarService) {
 
-    suspend fun getPackages(userId: Int): Resource<List<EventPackage>> = withContext(Dispatchers.IO) {
+    suspend fun getPackages(userId: Long): Resource<List<EventPackage>> = withContext(Dispatchers.IO) {
         try {
             val response = service.getEventsByUser(userId)
             if (response.isSuccessful) {
