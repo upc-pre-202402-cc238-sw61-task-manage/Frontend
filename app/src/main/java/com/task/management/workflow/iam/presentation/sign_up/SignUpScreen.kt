@@ -15,9 +15,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -42,13 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.task.management.workflow.common.constants.NavigationConstants
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     val user = viewModel.user.value
-    var roles = listOf("ROLE_USER", "ROLE_ADMIN")
-    var mSelectedText by remember { mutableStateOf(roles[0].toString()) }
+    val roles = listOf("ROLE_USER", "ROLE_ADMIN")
+    var mSelectedText by remember { mutableStateOf(roles[0]) }
     var expanded by remember { mutableStateOf(false) }
     var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
 
@@ -140,7 +137,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                 }
 
                 OutlinedButton(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally), onClick = {
-                    navController.navigate("signIn")
+                    navController.navigate(NavigationConstants.SIGN_UP_PATH)
                 }) {
                     Text("Already have an account? Sign in")
                 }
@@ -152,7 +149,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                 }
                 user.data?.let {
                     LaunchedEffect(it) {
-                        navController.navigate("signIn")
+                        navController.navigate(NavigationConstants.SIGN_IN_PATH)
                     }
                 }
             }

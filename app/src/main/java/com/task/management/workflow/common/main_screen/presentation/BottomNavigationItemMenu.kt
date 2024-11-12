@@ -3,7 +3,7 @@ package com.task.management.workflow.common.main_screen.presentation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Task
+import androidx.compose.material.icons.filled.Work
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.task.management.workflow.common.constants.NavigationConstants
 
@@ -15,11 +15,12 @@ sealed class BottomNavigationItemMenu(
     data object CalendarView: BottomNavigationItemMenu(
         "Calendar",
         NavigationConstants.CALENDAR_PATH,
-        Icons.Filled.CalendarToday)
-    data object TaskView: BottomNavigationItemMenu(
-        "Task",
-        NavigationConstants.TASK_LIST_PATH,
-        Icons.Filled.Task
+        Icons.Filled.CalendarToday
+    )
+    data object ProjectView: BottomNavigationItemMenu(
+        "Project",
+        NavigationConstants.PROJECT_LIST_PATH,
+        Icons.Filled.Work
     )
     data object ProfileView: BottomNavigationItemMenu(
         "Profile",

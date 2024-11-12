@@ -1,4 +1,4 @@
-package com.task.management.workflow.iam.data.locale
+package com.task.management.workflow.iam.data.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

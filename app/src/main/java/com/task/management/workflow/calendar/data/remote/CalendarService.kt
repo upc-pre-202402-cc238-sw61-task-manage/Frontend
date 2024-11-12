@@ -7,17 +7,22 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
-interface PackageService {
+interface CalendarService {
 
     @GET("api/v1/events/user/{userId}")
-    suspend fun getEventsbyUser(@Path("userId") userId: Int): Response<List<PackageDto>>
+    suspend fun getEventsByUser(@Path("userId") userId: Int): Response<List<CalendarDto>>
 
     @POST("api/v1/events")
     suspend fun addEvent(@Body event: CreateEventRequest): Response<Void>
 
     @DELETE("api/v1/events/{eventId}")
     suspend fun deleteEvent(@Path("eventId") eventId: Int): Response<Void>
+
+    @PUT("api/v1/events/{eventId}")
+    suspend fun editEvent(@Path("eventId") eventId: Int, @Body updatedEvent: CreateEventRequest): Response<Void>
+
 }

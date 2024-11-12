@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
-import com.task.management.workflow.iam.data.locale.AccountEntity
+import com.task.management.workflow.iam.data.local.AccountEntity
 import com.task.management.workflow.iam.data.remote.TokenProvider
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.repository.IAMRepository

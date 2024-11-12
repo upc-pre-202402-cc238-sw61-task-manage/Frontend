@@ -1,4 +1,4 @@
-package com.task.management.workflow.iam.data.locale
+package com.task.management.workflow.iam.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete

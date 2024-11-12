@@ -4,15 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class ProjectDto(
     @SerializedName("id")
-    val projectId: Long,
+    val projectId: Long? = 0,
     @SerializedName("projectName")
     val title: String,
     @SerializedName("projectDescription")
     val description: String,
-    @SerializedName("projectMember")
-    val member: String,
-    @SerializedName("projectManager")
+    @SerializedName("projectLeader")
     val leader: String,
-    @SerializedName("startDate")
-    val createdAt: String
 )

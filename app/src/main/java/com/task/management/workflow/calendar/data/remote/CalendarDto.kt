@@ -1,9 +1,8 @@
 package com.task.management.workflow.calendar.data.remote
 
 import com.task.management.workflow.calendar.domain.EventPackage
-import java.time.LocalDate
 
-data class PackageDto(
+data class CalendarDto(
     val id: Int,
     val projectId: Int,
     val userId: Int,
@@ -11,4 +10,4 @@ data class PackageDto(
     val description: String,
     var dueDate: String
 )
-fun PackageDto.toPackage(): EventPackage = EventPackage(id, projectId, userId, title, description, dueDate)
+fun CalendarDto.toPackage(): EventPackage = EventPackage(id, projectId, userId, title, description, dueDate)

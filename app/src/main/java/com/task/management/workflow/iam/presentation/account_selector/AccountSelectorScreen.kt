@@ -36,9 +36,9 @@ import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 
 @Composable
 fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavController) {
-    var userList = signInViewModel.userList.value
-    var selectedUser = signInViewModel.user.value
-    var mSelectedText = remember { mutableStateOf(selectedUser.data?.username ?: "") }
+    val userList = signInViewModel.userList.value
+    val selectedUser = signInViewModel.user.value
+    val mSelectedText = remember { mutableStateOf(selectedUser.data?.username ?: "") }
     var expanded by remember { mutableStateOf(false) }
 
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -48,11 +48,10 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
     else
         Icons.Filled.KeyboardArrowDown
 
-    Scaffold(
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             LaunchedEffect(Unit) {
-                if (userList.data == null && userList.error == null && userList.isLoading == false) {
+                if (userList.data == null && userList.error == null && !userList.isLoading) {
                     navController.navigate(NavigationConstants.SIGN_IN_PATH)
                 }
             }
@@ -92,7 +91,7 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
                     OutlinedButton(
                         onClick = {
                             signInViewModel.onUsernameChanged(mSelectedText.value)
-                            navController.navigate("signIn")
+                            navController.navigate(NavigationConstants.SIGN_IN_PATH)
                         },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
@@ -100,7 +99,7 @@ fun AccountSelectorScreen(signInViewModel: SignInViewModel, navController: NavCo
                     }
                     OutlinedButton(
                         onClick = {
-                            navController.navigate("signUp")
+                            navController.navigate(NavigationConstants.SIGN_UP_PATH)
                         },
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
