@@ -58,7 +58,8 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
 
     val events = viewModel.events.value
     val color = Color(25, 23, 89)
-    var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
+    //TODO: Delete unused code
+    //var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
 
     var showDialogAddEvent by remember { mutableStateOf(false) }
     var showDialogDeleteEvent by remember { mutableStateOf(false) }
@@ -94,7 +95,8 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            TextField(
+            //TODO: Delete unused code
+            /*TextField(
                 modifier = Modifier.width(80.dp),
                 value = userIdInput,
                 onValueChange = {
@@ -103,7 +105,7 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                     viewModel.onUserIdChanged(newUserId)
                 },
                 label = { Text("User ID") }
-            )
+            )*/
 
             //Calendario
             var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
