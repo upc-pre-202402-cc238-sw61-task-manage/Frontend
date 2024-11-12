@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.task.management.workflow.R
+import com.task.management.workflow.common.constants.NavigationConstants
 
 @Composable
 fun TeammateView(navController: NavController, profilesViewModel: ProfilesViewModel) {
@@ -59,7 +60,7 @@ fun TeammateView(navController: NavController, profilesViewModel: ProfilesViewMo
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
             onClick = {
-                navController.navigate("packageList")
+                navController.navigate(NavigationConstants.CALENDAR_PATH)
             },
             modifier = Modifier
                 .padding(16.dp)

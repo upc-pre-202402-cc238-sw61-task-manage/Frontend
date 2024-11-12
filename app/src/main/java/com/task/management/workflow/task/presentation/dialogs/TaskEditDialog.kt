@@ -1,4 +1,4 @@
-package com.task.management.workflow.task.presentation
+package com.task.management.workflow.task.presentation.dialogs
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Box
@@ -32,7 +32,7 @@ import java.util.Calendar
 fun TaskEditDialog(
     task: Task,
     onDismiss: () -> Unit,
-    onSaveChanges: (Task) -> Unit
+    onConfirm: (Task) -> Unit
 ) {
     var name by remember { mutableStateOf(task.name) }
     var description by remember { mutableStateOf(task.description) }
@@ -122,7 +122,7 @@ fun TaskEditDialog(
                     dueDate = dueDate,
                     status = status
                 )
-                onSaveChanges(updatedTask)
+                onConfirm(updatedTask)
                 },
                 colors = ButtonColors(
                     SuccessColor,

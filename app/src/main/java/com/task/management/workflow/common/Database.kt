@@ -2,8 +2,8 @@ package com.task.management.workflow.common
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.task.management.workflow.iam.data.locale.AccountDao
-import com.task.management.workflow.iam.data.locale.AccountEntity
+import com.task.management.workflow.iam.data.local.AccountDao
+import com.task.management.workflow.iam.data.local.AccountEntity
 import com.task.management.workflow.project.data.local.ProjectDao
 import com.task.management.workflow.project.data.local.ProjectEntity
 import com.task.management.workflow.task.data.local.TaskDao

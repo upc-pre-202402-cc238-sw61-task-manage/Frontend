@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.task.management.workflow.calendar.data.repository.PackageRepository
+import com.task.management.workflow.calendar.data.repository.CalendarRepository
 import com.task.management.workflow.calendar.domain.CreateEventRequest
 import com.task.management.workflow.calendar.domain.EventPackage
 import com.task.management.workflow.common.Resource
@@ -18,10 +18,9 @@ import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
-class PackageListEventsViewModel(private val repository: PackageRepository, private val repository2: TaskRepository): ViewModel() {
+class CalendarListEventsViewModel(private val repository: CalendarRepository, private val repository2: TaskRepository): ViewModel() {
 
     private val _events = mutableStateOf(UIState<List<EventPackage>>())
     val events: State<UIState<List<EventPackage>>> get() = _events
@@ -70,7 +69,7 @@ class PackageListEventsViewModel(private val repository: PackageRepository, priv
     private fun getTasksPackages(){
         _tasks.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val result = repository2.getTasksByUserId(userId.value)
+            val result = repository2.getTasksByUserIdRemotely(userId.value)
 
             if(result is Resource.Success){
                 _tasks.value = UIState(data = result.data)
@@ -85,10 +84,10 @@ class PackageListEventsViewModel(private val repository: PackageRepository, priv
         }
     }
 
-    fun addEvent(title: String, description: String, duedate: String) {
+    fun addEvent(title: String, description: String, dueDate: String) {
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, duedate)
+            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, dueDate)
 
             val result = repository.addEvent(newEvent)
 
@@ -111,10 +110,10 @@ class PackageListEventsViewModel(private val repository: PackageRepository, priv
         }
     }
 
-    fun editEvent(eventId: Int, title: String, description: String, duedate: String){
+    fun editEvent(eventId: Int, title: String, description: String, dueDate: String){
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, duedate)
+            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, dueDate)
             val result = repository.editEvent(eventId, newEvent)
             if (result is Resource.Success) {
                 getEventsPackages()

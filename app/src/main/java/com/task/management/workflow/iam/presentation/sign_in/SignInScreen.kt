@@ -23,11 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import com.bumptech.glide.Glide
-import com.skydoves.landscapist.glide.GlideImage
 import com.task.management.workflow.R
 import com.task.management.workflow.common.constants.NavigationConstants
 
@@ -35,8 +31,7 @@ import com.task.management.workflow.common.constants.NavigationConstants
 fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
     val user = viewModel.user.value
 
-    Scaffold (
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier.padding(32.dp),
             contentAlignment = Alignment.Center
@@ -102,7 +97,7 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
                     user.data?.let {
                         LaunchedEffect(it) {
                             viewModel.saveInDatabase()
-                            navController.navigate(NavigationConstants.TASK_LIST_PATH)
+                            navController.navigate(NavigationConstants.PROJECT_LIST_PATH)
                         }
                     }
                 }

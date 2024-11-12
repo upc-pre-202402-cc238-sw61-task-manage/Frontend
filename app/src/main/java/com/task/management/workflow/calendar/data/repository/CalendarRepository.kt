@@ -1,8 +1,8 @@
 package com.task.management.workflow.calendar.data.repository
 
 
-import com.task.management.workflow.calendar.data.remote.PackageDto
-import com.task.management.workflow.calendar.data.remote.PackageService
+import com.task.management.workflow.calendar.data.remote.CalendarDto
+import com.task.management.workflow.calendar.data.remote.CalendarService
 import com.task.management.workflow.calendar.data.remote.toPackage
 import com.task.management.workflow.calendar.domain.CreateEventRequest
 import com.task.management.workflow.calendar.domain.EventPackage
@@ -11,15 +11,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-class PackageRepository(private val service: PackageService) {
+class CalendarRepository(private val service: CalendarService) {
 
     suspend fun getPackages(userId: Int): Resource<List<EventPackage>> = withContext(Dispatchers.IO) {
         try {
-            val response = service.getEventsbyUser(userId)
+            val response = service.getEventsByUser(userId)
             if (response.isSuccessful) {
-                response.body()?.let { packageDtos: List<PackageDto> ->
-                    val packages = packageDtos.map { packageDto: PackageDto ->
-                        packageDto.toPackage()
+                response.body()?.let { calendarDtos: List<CalendarDto> ->
+                    val packages = calendarDtos.map { calendarDto: CalendarDto ->
+                        calendarDto.toPackage()
                     }.toList()
                     return@withContext Resource.Success(data = packages)
                 }

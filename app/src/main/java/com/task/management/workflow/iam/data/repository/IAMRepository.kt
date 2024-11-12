@@ -3,8 +3,8 @@ package com.task.management.workflow.iam.data.repository
 
 import android.util.Log
 import com.task.management.workflow.common.Resource
-import com.task.management.workflow.iam.data.locale.AccountDao
-import com.task.management.workflow.iam.data.locale.AccountEntity
+import com.task.management.workflow.iam.data.local.AccountDao
+import com.task.management.workflow.iam.data.local.AccountEntity
 import com.task.management.workflow.iam.data.remote.IAMService
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInResponse
@@ -47,7 +47,7 @@ class IAMRepository(
 
     suspend fun getAccounts(): List<AccountEntity> {
         return try {
-           var accounts = accountDao.getAccounts()
+           val accounts = accountDao.getAccounts()
             return accounts
         } catch (e: Exception) {
             // Handle the exception as needed
@@ -55,7 +55,6 @@ class IAMRepository(
             emptyList()
         }
     }
-
 
     suspend fun deleteAccount(account: AccountEntity) {
         try {
