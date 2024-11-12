@@ -22,7 +22,7 @@ import com.task.management.workflow.project.presentation.projectList.ProjectList
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationHost(navController: NavHostController, viewModelContainer: ViewModelContainer) {
-    NavHost(navController = navController, startDestination = NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) {
+    NavHost(navController = navController, startDestination = NavigationConstants.SIGN_IN_PATH) {
         composable(NavigationConstants.SIGN_IN_PATH) { SignInScreen(viewModelContainer.signInViewModel, navController) }
         composable(NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) { AccountSelectorScreen(viewModelContainer.signInViewModel, navController) }
         composable(NavigationConstants.SIGN_UP_PATH) { SignUpScreen(viewModelContainer.signUpViewModel, navController) }

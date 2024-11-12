@@ -89,6 +89,17 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
                     Text("Not have an account? Sign up")
                 }
 
+                OutlinedButton(
+                    onClick = {
+                        navController.navigate(NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) // Navigate to SignUpScreen
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text("You Logged before? Select your account")
+                }
+
                 if (user.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else if (user.error.isNotEmpty()) {
