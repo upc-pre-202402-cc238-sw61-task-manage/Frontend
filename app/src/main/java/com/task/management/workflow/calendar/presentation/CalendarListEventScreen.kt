@@ -94,6 +94,11 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+
+            LaunchedEffect(Unit) {
+                viewModel.getEventsPackages()
+            }
+
             //TODO: Delete unused code
             /*TextField(
                 modifier = Modifier.width(80.dp),

@@ -47,7 +47,7 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
 
     }
 
-    private fun getEventsPackages(){
+    fun getEventsPackages(){
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
             val result = repository.getPackages(userId.value)
