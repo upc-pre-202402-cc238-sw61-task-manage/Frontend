@@ -14,6 +14,7 @@ import com.task.management.workflow.common.constants.NavigationConstants
 import com.task.management.workflow.iam.presentation.account_selector.AccountSelectorScreen
 import com.task.management.workflow.iam.presentation.sign_in.SignInScreen
 import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
+import com.task.management.workflow.profiles.presentation.EditUserScreen
 import com.task.management.workflow.profiles.presentation.TeammateView
 import com.task.management.workflow.project.presentation.projectDetails.ProjectDetailScreen
 import com.task.management.workflow.project.presentation.projectList.ProjectListScreen
@@ -34,6 +35,7 @@ fun NavigationHost(navController: NavHostController, viewModelContainer: ViewMod
             val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
             ProjectDetailScreen(viewModelContainer.projectViewModel, viewModelContainer.projectUserViewModel, navController, projectId)
         }
-        composable(NavigationConstants.PROFILE_PATH) { TeammateView(navController, viewModelContainer.profilesViewModel) }
+        composable(NavigationConstants.PROFILE_PATH) { TeammateView(viewModelContainer.profilesViewModel, navController) }
+        composable(NavigationConstants.EDIT_PROFILE_PATH) { EditUserScreen(viewModelContainer.profilesViewModel, navController) }
     }
 }

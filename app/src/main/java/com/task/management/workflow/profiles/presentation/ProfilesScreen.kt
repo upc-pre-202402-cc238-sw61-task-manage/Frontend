@@ -23,7 +23,7 @@ import com.task.management.workflow.R
 import com.task.management.workflow.common.constants.NavigationConstants
 
 @Composable
-fun TeammateView(navController: NavController, profilesViewModel: ProfilesViewModel) {
+fun TeammateView(profilesViewModel: ProfilesViewModel, navController: NavController) {
     val profile = profilesViewModel.profile
 
     LaunchedEffect(Unit) {
@@ -43,12 +43,6 @@ fun TeammateView(navController: NavController, profilesViewModel: ProfilesViewMo
                     .size(36.dp)
             )
         }
-        if (profile.value.error != null) {
-            Text(
-                text = "An error occurred: ${profile.value.error}",
-                modifier = Modifier.padding(16.dp)
-            )
-        }
         TeammateCard(
             imageUrl = "https://www.pngall.com/wp-content/uploads/5/Profile.png", // URL temporal para la imagen
             firstName = profile.value.data?.firstName ?: "First Name",
@@ -57,16 +51,15 @@ fun TeammateView(navController: NavController, profilesViewModel: ProfilesViewMo
             phoneNumber = profile.value.data?.phoneNumber ?: "Phone Number",
             tasks = listOf("Task 1", "Task 2", "Task 3")
         )
-        Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
             onClick = {
-                navController.navigate(NavigationConstants.CALENDAR_PATH)
+                navController.navigate(NavigationConstants.EDIT_PROFILE_PATH)
             },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Text("Return to calendar", fontWeight = FontWeight.Bold)
+            Text("Edit Profile", fontWeight = FontWeight.Bold)
         }
     }
 }

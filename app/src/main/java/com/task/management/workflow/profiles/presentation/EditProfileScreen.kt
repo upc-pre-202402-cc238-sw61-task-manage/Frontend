@@ -24,11 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.task.management.workflow.profiles.domain.model.Profile
+import kotlinx.coroutines.launch
 
 @Composable
 fun EditUserScreen(
-    onConfirm: (String, String, String) -> Unit,
-    onCancel: () -> Unit
+    profilesViewModel: ProfilesViewModel,
+    navController: NavController
 ) {
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -110,7 +114,17 @@ fun EditUserScreen(
             Button(
                 onClick = {
                     if (isNameValid && isPhoneValid && isCompanyValid) {
-                        onConfirm(name, phone, company)
+                        profilesViewModel.viewModelScope.launch {
+                            profilesViewModel.updateProfile(
+                                Profile(
+                                    firstName = name,
+                                    lastName = "",
+                                    email = "",
+                                    phoneNumber = phone
+                                )
+                            )
+                            navController.popBackStack()
+                        }
                     }
                 },
                 enabled = isNameValid && isPhoneValid && isCompanyValid,
@@ -122,18 +136,13 @@ fun EditUserScreen(
             Spacer(modifier = Modifier.width(16.dp))
 
             OutlinedButton(
-                onClick = onCancel,
+                onClick = {
+                    navController.popBackStack()
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Cancel")
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun EditUserScreenPreview() {
-    EditUserScreen(onConfirm = { _, _ , _-> }, onCancel = { })
 }

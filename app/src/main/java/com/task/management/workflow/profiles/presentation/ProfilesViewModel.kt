@@ -22,19 +22,29 @@ class ProfilesViewModel(val profilesRepository: ProfileRepository, val signInVie
         }
     }
 
-    suspend fun getProfile() {
-            val response = profilesRepository.getProfile(1)
-            Log.d("ProfilesViewModel", "Response: ${response.message}")
-            _profile.value = when (response) {
-                is Resource.Success -> UIState(data = response.data?.let {
-                    Profile(
-                        firstName = it.firstName,
-                        lastName = it.lastName,
-                        email = it.email,
-                        phoneNumber = it.phoneNumber
-                    )
-                })
-                else -> UIState(error = "Unexpected response type")
-            }
+    suspend fun updateProfile(profile: Profile) {
+        try {
+            val response = profilesRepository.updateProfile(profile)
+            Log.d("ProfilesViewModel", "Response: $response")
+            _profile.value = UIState(data = profile)
+        } catch (e: Exception) {
+            Log.e("ProfilesViewModel", "Error updating profile", e)
         }
+    }
+
+    suspend fun getProfile() {
+        val response = profilesRepository.getProfile(1)
+        Log.d("ProfilesViewModel", "Response: ${response.message}")
+        _profile.value = when (response) {
+            is Resource.Success -> UIState(data = response.data?.let {
+                Profile(
+                    firstName = it.firstName,
+                    lastName = it.lastName,
+                    email = it.email,
+                    phoneNumber = it.phoneNumber
+                )
+            })
+            else -> UIState(error = "Unexpected response type")
+        }
+    }
 }
