@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -52,7 +51,7 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController: NavController) {
+fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
 
     val events = viewModel.events.value
     val userId = viewModel.userId.value
@@ -110,7 +109,7 @@ fun PackageListEventScreen(viewModel: PackageListEventsViewModel, navController:
                 state = estate,
                 dayContent = { day ->
                     Day(day, eventsDate, tasksDate,  isSelected = selectedDate == day.date) {
-                            day -> selectedDate = if (selectedDate == day.date) null else day.date
+                            _ -> selectedDate = if (selectedDate == day.date) null else day.date
                     }},
                 monthContainer = { _, container ->
                     val configuration = LocalConfiguration.current

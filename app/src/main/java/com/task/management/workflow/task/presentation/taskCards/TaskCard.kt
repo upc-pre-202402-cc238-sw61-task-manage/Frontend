@@ -36,7 +36,7 @@ import com.task.management.workflow.ui.theme.WarningColor
 fun TaskCard(
     task: Task,
     onTaskSelected: (Task) -> Unit,
-    onDeleteClicked: (Task) -> Unit
+    onDeleteClicked: (Long) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -70,7 +70,7 @@ fun TaskCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    IconButton(onClick = { onDeleteClicked(task) }) {
+                    IconButton(onClick = { onDeleteClicked(task.taskId!!.toLong()) }) {
                         Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Task")
                     }
                 }

@@ -62,4 +62,18 @@ class ProjectUserRepository(private val projectUserService: ProjectUserService) 
             return@withContext Resource.Error(e.message ?: "An error occurred")
         }
     }
+
+    suspend fun deleteUsersByProjectId(projectId: Long): Resource<Unit> = withContext(Dispatchers.IO) {
+        if (projectId == 0L) return@withContext Resource.Error("Project ID cannot be null")
+        try {
+            val response = projectUserService.deleteUsersByProjectId(projectId)
+            if (response.isSuccessful) {
+                return@withContext Resource.Success(Unit)
+            } else {
+                return@withContext Resource.Error("Failed to delete users for project: ${response.message()}")
+            }
+        } catch (e: Exception) {
+            return@withContext Resource.Error(e.message ?: "An error occurred")
+        }
+    }
 }

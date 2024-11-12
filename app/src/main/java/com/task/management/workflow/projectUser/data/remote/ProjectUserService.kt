@@ -4,6 +4,7 @@ import com.task.management.workflow.iam.domain.model.User
 import com.task.management.workflow.project.domain.Project
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
@@ -29,5 +30,10 @@ interface ProjectUserService {
     suspend fun getUserProjects(
         @Path("userId") userId: Long
     ): Response<List<Project>>
+
+    @DELETE("api/v1/project-users/project/{projectId}/users")
+    suspend fun deleteUsersByProjectId(
+        @Path("projectId") projectId: Long
+    ): Response<Void>
 
 }

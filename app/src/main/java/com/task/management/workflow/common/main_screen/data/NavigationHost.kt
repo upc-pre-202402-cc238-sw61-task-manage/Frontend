@@ -8,7 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.task.management.workflow.calendar.presentation.PackageListEventScreen
+import com.task.management.workflow.calendar.presentation.CalendarListEventScreen
 import com.task.management.workflow.common.ViewModelContainer
 import com.task.management.workflow.common.constants.NavigationConstants
 import com.task.management.workflow.iam.presentation.account_selector.AccountSelectorScreen
@@ -17,8 +17,6 @@ import com.task.management.workflow.iam.presentation.sign_up.SignUpScreen
 import com.task.management.workflow.profiles.presentation.TeammateView
 import com.task.management.workflow.project.presentation.projectDetails.ProjectDetailScreen
 import com.task.management.workflow.project.presentation.projectList.ProjectListScreen
-import com.task.management.workflow.task.presentation.dialogs.TaskCreationScreen
-import com.task.management.workflow.task.presentation.taskList.TaskListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -27,9 +25,7 @@ fun NavigationHost(navController: NavHostController, viewModelContainer: ViewMod
         composable(NavigationConstants.SIGN_IN_PATH) { SignInScreen(viewModelContainer.signInViewModel, navController) }
         composable(NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) { AccountSelectorScreen(viewModelContainer.signInViewModel, navController) }
         composable(NavigationConstants.SIGN_UP_PATH) { SignUpScreen(viewModelContainer.signUpViewModel, navController) }
-        composable(NavigationConstants.CALENDAR_PATH) { PackageListEventScreen(viewModelContainer.calendarViewModel, navController) }
-        composable(NavigationConstants.TASK_LIST_PATH) { TaskListScreen(viewModelContainer.taskViewModel, navController) }
-        composable(NavigationConstants.TASK_CREATION_PATH) { TaskCreationScreen(viewModelContainer.taskViewModel, navController) }
+        composable(NavigationConstants.CALENDAR_PATH) { CalendarListEventScreen(viewModelContainer.calendarViewModel) }
         composable(NavigationConstants.PROJECT_LIST_PATH) { ProjectListScreen(viewModelContainer.projectViewModel, navController) }
         composable(
             route = "${NavigationConstants.PROJECT_DETAILS_PATH}/{projectId}",

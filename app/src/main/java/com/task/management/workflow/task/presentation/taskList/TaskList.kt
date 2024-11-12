@@ -10,7 +10,7 @@ import com.task.management.workflow.task.presentation.taskCards.TaskCard
 fun TaskList(
     tasks: List<Task>,
     onTaskSelected: (Task) -> Unit,
-    onDeleteClicked: (Task) -> Unit
+    onDeleteClicked: (Long) -> Unit
 ) {
     LazyColumn {
         items(tasks) { task ->

@@ -11,13 +11,18 @@ import com.task.management.workflow.projectUser.data.remote.ProjectUserRequest
 import com.task.management.workflow.projectUser.data.repository.ProjectUserRepository
 import kotlinx.coroutines.launch
 
-class ProjectUserViewModel(private val projectUserRepository: ProjectUserRepository) : ViewModel() {
+class ProjectUserViewModel(
+    private val projectUserRepository: ProjectUserRepository
+) : ViewModel() {
 
     private val _state = mutableStateOf(UIState<List<ProjectUserRequest>>())
     val state: State<UIState<List<ProjectUserRequest>>> get() = _state
 
     private val _projectUsers = mutableStateOf<List<User>>(emptyList())
     val projectUsers: State<List<User>> get() = _projectUsers
+
+    //private val _users = mutableStateOf<List<User>>(emptyList())
+    //val users: State<List<User>> get() = _users
 
     fun getUsersByProjectId(projectId: Long) {
         viewModelScope.launch {
@@ -30,6 +35,7 @@ class ProjectUserViewModel(private val projectUserRepository: ProjectUserReposit
         }
     }
 
+    /*
     fun addUserToProject(projectId: Long, userId: Long) {
         viewModelScope.launch {
             projectUserRepository.addUserToProject(projectId, userId)
@@ -43,4 +49,5 @@ class ProjectUserViewModel(private val projectUserRepository: ProjectUserReposit
             getUsersByProjectId(projectId)
         }
     }
+     */
 }

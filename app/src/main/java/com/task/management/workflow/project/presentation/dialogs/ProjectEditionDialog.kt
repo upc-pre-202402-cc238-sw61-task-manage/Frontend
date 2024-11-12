@@ -1,4 +1,4 @@
-package com.task.management.workflow.project.presentation.projectDetails
+package com.task.management.workflow.project.presentation.dialogs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

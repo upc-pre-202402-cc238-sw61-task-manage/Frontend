@@ -26,7 +26,6 @@ fun MainScreen(viewModelContainer: ViewModelContainer){
     val navigationItem = listOf(
         BottomNavigationItemMenu.CalendarView,
         BottomNavigationItemMenu.ProjectView,
-        BottomNavigationItemMenu.TaskView,
         BottomNavigationItemMenu.ProfileView
     )
 

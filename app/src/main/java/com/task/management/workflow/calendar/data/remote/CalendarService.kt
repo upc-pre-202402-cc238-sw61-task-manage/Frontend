@@ -11,10 +11,10 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
-interface PackageService {
+interface CalendarService {
 
     @GET("api/v1/events/user/{userId}")
-    suspend fun getEventsbyUser(@Path("userId") userId: Int): Response<List<PackageDto>>
+    suspend fun getEventsByUser(@Path("userId") userId: Int): Response<List<CalendarDto>>
 
     @POST("api/v1/events")
     suspend fun addEvent(@Body event: CreateEventRequest): Response<Void>
