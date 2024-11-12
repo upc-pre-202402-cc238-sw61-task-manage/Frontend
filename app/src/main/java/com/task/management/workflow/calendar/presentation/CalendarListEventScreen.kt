@@ -42,6 +42,7 @@ import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.task.management.workflow.calendar.domain.EventPackage
+import com.task.management.workflow.common.session.UserSession
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -52,9 +53,10 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
+    // Using the UserSession to get the user ID
+    val userId = UserSession.userId.collectAsState().value
 
     val events = viewModel.events.value
-    val userId = viewModel.userId.value
     val color = Color(25, 23, 89)
     var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
 
