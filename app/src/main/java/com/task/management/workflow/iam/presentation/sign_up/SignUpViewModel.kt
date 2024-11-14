@@ -46,7 +46,8 @@ class SignUpViewModel(private val repository: IAMRepository) : ViewModel() {
         if (_username.value.isEmpty() || _password.value.isEmpty() || _roles.value.isEmpty()) {
             _errorMessage.value = "All fields must be filled"
             return
-        }
+        } else
+            _errorMessage.value = ""
 
         _user.value = UIState(isLoading = true)
         viewModelScope.launch {

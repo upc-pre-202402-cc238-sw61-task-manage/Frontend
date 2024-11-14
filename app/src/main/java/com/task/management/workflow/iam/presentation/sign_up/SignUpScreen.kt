@@ -55,6 +55,11 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     else
         Icons.Filled.KeyboardArrowDown
 
+    // this initialize the role in the viewmodel
+    LaunchedEffect (Unit) {
+        viewModel.onRolesChanged(mSelectedText)
+    }
+
     Scaffold { paddingValues ->
         Box(
             modifier = Modifier.padding(32.dp),
@@ -143,6 +148,13 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                 if (user.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else if (errorMessage.isNotEmpty()) {
+                    if (errorMessage == "Unauthorized") {
+                        Text(
+                            "Invalid credentials, the username is taken",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    }
                     Text(errorMessage, color = MaterialTheme.colorScheme.error, modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
                 user.data?.let {
@@ -153,9 +165,4 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SignUpScreenPreview() {
 }
