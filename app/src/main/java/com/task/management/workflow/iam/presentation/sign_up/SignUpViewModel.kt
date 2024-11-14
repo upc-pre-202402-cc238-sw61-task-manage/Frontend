@@ -27,6 +27,9 @@ class SignUpViewModel(private val repository: IAMRepository) : ViewModel() {
     private val _roles = MutableStateFlow("")
     val roles: StateFlow<String> get() = _roles
 
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage: StateFlow<String> get() = _errorMessage
+
     fun onUsernameChanged(username: String) {
         _username.value = username
     }
@@ -40,12 +43,17 @@ class SignUpViewModel(private val repository: IAMRepository) : ViewModel() {
     }
 
     fun signUp() {
+        if (_username.value.isEmpty() || _password.value.isEmpty() || _roles.value.isEmpty()) {
+            _errorMessage.value = "All fields must be filled"
+            return
+        } else
+            _errorMessage.value = ""
+
         _user.value = UIState(isLoading = true)
         viewModelScope.launch {
             val username = _username.value
             val password = _password.value
             val roles = _roles.value.split(",").map { it.trim() }
-            // log the all user data to request
             val userRequest = SignUpRequest(username, password, roles)
             val response = repository.signUp(userRequest)
 
@@ -60,6 +68,7 @@ class SignUpViewModel(private val repository: IAMRepository) : ViewModel() {
                 }
                 _user.value = UIState(data = user)
             } else {
+                _errorMessage.value = response.message ?: "An error occurred"
                 _user.value = UIState(error = response.message ?: "An error occurred")
             }
         }

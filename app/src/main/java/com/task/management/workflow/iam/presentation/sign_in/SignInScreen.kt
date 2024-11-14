@@ -103,7 +103,20 @@ fun SignInScreen(viewModel: SignInViewModel, navController: NavController) {
                 if (user.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else if (user.error.isNotEmpty()) {
-                    Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
+                    if (user.error == "An error occurred") {
+                        Text(
+                            "An error occurred",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    } else
+                    Text(
+                        "It looks like your username or password is incorrect",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 } else {
                     user.data?.let {
                         LaunchedEffect(it) {
