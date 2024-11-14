@@ -14,15 +14,15 @@ import retrofit2.http.Path
 interface CalendarService {
 
     @GET("api/v1/events/user/{userId}")
-    suspend fun getEventsByUser(@Path("userId") userId: Int): Response<List<CalendarDto>>
+    suspend fun getEventsByUser(@Path("userId") userId: Long): Response<List<CalendarDto>>
 
     @POST("api/v1/events")
     suspend fun addEvent(@Body event: CreateEventRequest): Response<Void>
 
     @DELETE("api/v1/events/{eventId}")
-    suspend fun deleteEvent(@Path("eventId") eventId: Int): Response<Void>
+    suspend fun deleteEvent(@Path("eventId") eventId: Long): Response<Void>
 
     @PUT("api/v1/events/{eventId}")
-    suspend fun editEvent(@Path("eventId") eventId: Int, @Body updatedEvent: CreateEventRequest): Response<Void>
+    suspend fun editEvent(@Path("eventId") eventId: Long, @Body updatedEvent: CreateEventRequest): Response<Void>
 
 }

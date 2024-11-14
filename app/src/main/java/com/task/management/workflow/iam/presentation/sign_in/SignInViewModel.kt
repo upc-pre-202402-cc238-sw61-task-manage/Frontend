@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.iam.data.local.AccountEntity
 import com.task.management.workflow.iam.data.remote.TokenProvider
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
@@ -84,6 +85,9 @@ class SignInViewModel(private val repository: IAMRepository, private val tokenPr
                     )
                 }
                 _user.value = UIState(data = user)
+                user?.id?.let { UserSession.setUserId(it) }
+                // LOG the current user in UserSession
+                Log.d("SignInViewModel", "Signed in user: ${UserSession.getUserId().toString() ?: "No user"}")
             } else {
                 _user.value = UIState(error = response.message ?: "An error occurred")
             }

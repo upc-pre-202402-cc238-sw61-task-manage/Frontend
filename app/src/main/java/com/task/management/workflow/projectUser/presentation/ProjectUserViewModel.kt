@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.iam.domain.model.User
 import com.task.management.workflow.projectUser.data.remote.ProjectUserRequest
 import com.task.management.workflow.projectUser.data.repository.ProjectUserRepository
@@ -20,6 +21,9 @@ class ProjectUserViewModel(
 
     private val _projectUsers = mutableStateOf<List<User>>(emptyList())
     val projectUsers: State<List<User>> get() = _projectUsers
+
+    private val _userId = mutableStateOf(UserSession.userId.value ?: 0)
+    val userId: State<Long> get() = _userId
 
     //private val _users = mutableStateOf<List<User>>(emptyList())
     //val users: State<List<User>> get() = _users

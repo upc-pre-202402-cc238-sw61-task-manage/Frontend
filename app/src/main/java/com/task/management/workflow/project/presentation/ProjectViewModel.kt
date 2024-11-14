@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.project.data.repository.ProjectRepository
 import com.task.management.workflow.project.domain.Project
 import com.task.management.workflow.projectUser.data.repository.ProjectUserRepository
@@ -26,6 +27,9 @@ class ProjectViewModel(
 
     private val _selectedProject = mutableStateOf<Project?>(null)
     val selectedProject: State<Project?> get() = _selectedProject
+
+    private val _userId = mutableStateOf(UserSession.userId.value ?: 0)
+    val userId: State<Long> get() = _userId
 
     private val _taskList = mutableStateOf(UIState<List<Task>>())
     val taskList: State<UIState<List<Task>>> get() = _taskList
@@ -95,7 +99,8 @@ class ProjectViewModel(
     fun getTasks(projectId: Long, status: String, onlyShowUser: Boolean){
         if(onlyShowUser) {
             if(status == defaultStatusState) {
-                getTasksFromProjectWithUserId(projectId,1)
+                // pass the user id from UserSession
+                getTasksFromProjectWithUserId(projectId, userId.value)
             }
             else {
                 getTasksFromProjectWithUserId(projectId,1, status)
