@@ -44,6 +44,7 @@ import com.task.management.workflow.common.constants.NavigationConstants
 @Composable
 fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
     val user = viewModel.user.value
+    val errorMessage = viewModel.errorMessage.collectAsState().value
     val roles = listOf("ROLE_USER", "ROLE_ADMIN")
     var mSelectedText by remember { mutableStateOf(roles[0]) }
     var expanded by remember { mutableStateOf(false) }
@@ -99,8 +100,6 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                             onClick = { expanded = !expanded }
                         )
                         .onGloballyPositioned { coordinates ->
-                            // This value is used to assign to
-                            // the DropDown the same width
                             mTextFieldSize = coordinates.size.toSize()
                         },
                     readOnly = true,
@@ -123,9 +122,8 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                             expanded = false
                         },
                             text = { Text(label) })
-                        }
+                    }
                 }
-
 
                 OutlinedButton(
                     onClick = { viewModel.signUp() },
@@ -133,19 +131,19 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavController) {
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                 ) {
-                    Text("Sign in", color = MaterialTheme.colorScheme.secondary)
+                    Text("Sign up", color = MaterialTheme.colorScheme.secondary)
                 }
 
                 OutlinedButton(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally), onClick = {
-                    navController.navigate(NavigationConstants.SIGN_UP_PATH)
+                    navController.navigate(NavigationConstants.SIGN_IN_PATH)
                 }) {
                     Text("Already have an account? Sign in")
                 }
 
                 if (user.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                } else if (user.error.isNotEmpty()) {
-                    Text(user.error, modifier = Modifier.align(Alignment.CenterHorizontally))
+                } else if (errorMessage.isNotEmpty()) {
+                    Text(errorMessage, color = MaterialTheme.colorScheme.error, modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
                 user.data?.let {
                     LaunchedEffect(it) {
