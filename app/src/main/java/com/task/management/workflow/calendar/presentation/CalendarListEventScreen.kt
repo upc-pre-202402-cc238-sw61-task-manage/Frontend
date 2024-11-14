@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -42,6 +41,7 @@ import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.task.management.workflow.calendar.domain.EventPackage
+import com.task.management.workflow.common.session.UserSession
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -52,11 +52,13 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
+    // Using the UserSession to get the user ID
+    val userId = UserSession.userId.collectAsState().value
 
     val events = viewModel.events.value
-    val userId = viewModel.userId.value
     val color = Color(25, 23, 89)
-    var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
+    //TODO: Delete unused code
+    //var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
 
     var showDialogAddEvent by remember { mutableStateOf(false) }
     var showDialogDeleteEvent by remember { mutableStateOf(false) }
@@ -92,7 +94,13 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            TextField(
+
+            LaunchedEffect(Unit) {
+                viewModel.getEventsPackages()
+            }
+
+            //TODO: Delete unused code
+            /*TextField(
                 modifier = Modifier.width(80.dp),
                 value = userIdInput,
                 onValueChange = {
@@ -101,7 +109,7 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                     viewModel.onUserIdChanged(newUserId)
                 },
                 label = { Text("User ID") }
-            )
+            )*/
 
             //Calendario
             var selectedDate by remember { mutableStateOf<LocalDate?>(null) }

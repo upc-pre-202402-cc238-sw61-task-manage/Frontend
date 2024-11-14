@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 class CalendarRepository(private val service: CalendarService) {
 
-    suspend fun getPackages(userId: Int): Resource<List<EventPackage>> = withContext(Dispatchers.IO) {
+    suspend fun getPackages(userId: Long): Resource<List<EventPackage>> = withContext(Dispatchers.IO) {
         try {
             val response = service.getEventsByUser(userId)
             if (response.isSuccessful) {
@@ -50,7 +50,7 @@ class CalendarRepository(private val service: CalendarService) {
         }
     }
 
-    suspend fun deleteEvent(eventId: Int): Resource<Unit>{
+    suspend fun deleteEvent(eventId: Long): Resource<Unit>{
         return try {
             val response = service.deleteEvent(eventId)
             if (response.isSuccessful) {
@@ -63,7 +63,7 @@ class CalendarRepository(private val service: CalendarService) {
         }
     }
 
-    suspend fun editEvent(eventId: Int, event: CreateEventRequest): Resource<Unit>{
+    suspend fun editEvent(eventId: Long, event: CreateEventRequest): Resource<Unit>{
         return try {
 
             val response = service.editEvent(eventId, event)

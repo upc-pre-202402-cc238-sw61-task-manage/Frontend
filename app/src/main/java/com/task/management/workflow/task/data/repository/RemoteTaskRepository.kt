@@ -90,7 +90,7 @@ class RemoteTaskRepository (private val service: TaskService) {
         }
     }
 
-    suspend fun getTasksByUserIdRemotely(taskId: Int): Resource<List<Task>> = withContext(
+    suspend fun getTasksByUserIdRemotely(taskId: Long): Resource<List<Task>> = withContext(
         Dispatchers.IO) {
         try {
             val response = service.getTasksByUserId(taskId)

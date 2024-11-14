@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.iam.presentation.sign_in.SignInViewModel
 import com.task.management.workflow.profiles.data.repository.ProfileRepository
 import com.task.management.workflow.profiles.domain.model.Profile
@@ -15,6 +16,9 @@ import kotlinx.coroutines.launch
 class ProfilesViewModel(val profilesRepository: ProfileRepository, val signInViewModel: SignInViewModel) : ViewModel() {
     private val _profile = mutableStateOf(UIState<Profile>())
     val profile: State<UIState<Profile>> get() = _profile
+
+    private val _userId = mutableStateOf(UserSession.userId.value ?: 0)
+    val userId: State<Long> get() = _userId
 
     init {
         viewModelScope.launch {
@@ -33,7 +37,7 @@ class ProfilesViewModel(val profilesRepository: ProfileRepository, val signInVie
     }
 
     suspend fun getProfile() {
-        val response = profilesRepository.getProfile(1)
+        val response = profilesRepository.getProfile(userId.value)
         Log.d("ProfilesViewModel", "Response: ${response.message}")
         _profile.value = when (response) {
             is Resource.Success -> UIState(data = response.data?.let {

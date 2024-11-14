@@ -4,7 +4,6 @@ import android.icu.util.Calendar
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,7 @@ import com.task.management.workflow.calendar.domain.CreateEventRequest
 import com.task.management.workflow.calendar.domain.EventPackage
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
 import kotlinx.coroutines.launch
@@ -28,8 +28,8 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
     private val _tasks = mutableStateOf(UIState<List<Task>>())
     val tasks: State<UIState<List<Task>>> get() = _tasks
 
-    private val _userId = mutableIntStateOf(1)
-    val userId: State<Int> get() = _userId
+    private val _userId = mutableStateOf(UserSession.userId.value ?: 0)
+    val userId: State<Long> get() = _userId
 
     val calendar: Calendar = Calendar.getInstance()
 
@@ -40,14 +40,14 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
     private val _taskDates = mutableStateListOf<LocalDate>()
     val taskDates: List<LocalDate> get() = _taskDates
 
-    fun onUserIdChanged(id: Int){
-        _userId.intValue = id
+    fun onUserIdChanged(id: Long){
+        _userId.value = id
         getTasksPackages()
         getEventsPackages()
 
     }
 
-    private fun getEventsPackages(){
+    fun getEventsPackages(){
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
             val result = repository.getPackages(userId.value)
@@ -87,7 +87,7 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
     fun addEvent(title: String, description: String, dueDate: String) {
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, dueDate)
+            val newEvent = CreateEventRequest(0, _userId.value, title, description, dueDate)
 
             val result = repository.addEvent(newEvent)
 
@@ -99,7 +99,7 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
         }
     }
 
-    fun removeEvent(eventId: Int) {
+    fun removeEvent(eventId: Long) {
         viewModelScope.launch {
             val result = repository.deleteEvent(eventId)
             if (result is Resource.Success) {
@@ -110,10 +110,10 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
         }
     }
 
-    fun editEvent(eventId: Int, title: String, description: String, dueDate: String){
+    fun editEvent(eventId: Long, title: String, description: String, dueDate: String){
         _events.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val newEvent = CreateEventRequest(0, _userId.intValue, title, description, dueDate)
+            val newEvent = CreateEventRequest(0, _userId.value, title, description, dueDate)
             val result = repository.editEvent(eventId, newEvent)
             if (result is Resource.Success) {
                 getEventsPackages()

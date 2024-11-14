@@ -6,9 +6,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 data class EventPackage(
-    val id: Int,
-    val projectId: Int,
-    val userId: Int,
+    val id: Long,
+    val projectId: Long,
+    val userId: Long,
     val title: String,
     val description: String,
     var dueDate: String)
