@@ -2,6 +2,7 @@ package com.task.management.workflow.task.domain
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.task.management.workflow.task.data.remote.TaskDto
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -18,5 +19,17 @@ data class Task(
     fun toLocalDate(): LocalDate {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return LocalDate.parse(dueDate, formatter)
+    }
+
+    fun toTaskDto(): TaskDto {
+        return TaskDto(
+            taskId,
+            name,
+            description,
+            dueDate,
+            projectId,
+            userId,
+            status
+        )
     }
 }

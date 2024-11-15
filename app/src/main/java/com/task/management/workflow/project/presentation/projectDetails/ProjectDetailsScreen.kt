@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,11 +24,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,13 +43,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.project.presentation.ProjectViewModel
 import com.task.management.workflow.project.presentation.dialogs.ProjectDeleteDialog
 import com.task.management.workflow.project.presentation.dialogs.ProjectEditionDialog
 import com.task.management.workflow.projectUser.presentation.ProjectUserViewModel
 import com.task.management.workflow.projectUser.presentation.ProjectUsersList
-//import com.task.management.workflow.projectUser.presentation.dialogs.ProjectUserCreationDialog TODO
+import com.task.management.workflow.projectUser.presentation.dialogs.ProjectUserCreationDialog
 import com.task.management.workflow.task.domain.Task
+import com.task.management.workflow.task.domain.TaskStatus
 import com.task.management.workflow.task.presentation.dialogs.TaskCreationDialog
 import com.task.management.workflow.task.presentation.dialogs.TaskDeleteDialog
 import com.task.management.workflow.task.presentation.dialogs.TaskEditDialog
@@ -55,16 +60,18 @@ import com.task.management.workflow.task.presentation.taskFilter.TaskFilterSecti
 import com.task.management.workflow.task.presentation.taskList.TaskList
 import com.task.management.workflow.ui.theme.DeepIndigoColor
 import com.task.management.workflow.ui.theme.SlateBlueColor
+import com.task.management.workflow.user.presentation.UserViewModel
 
 @Composable
 fun ProjectDetailScreen(
     projectViewModel: ProjectViewModel,
     projectUserViewModel: ProjectUserViewModel,
+    userViewModel: UserViewModel,
     navController: NavController,
     projectId: Long
 ) {
-    val project by projectViewModel.selectedProject
-    val taskList = projectViewModel.taskList.value
+    val project by projectUserViewModel.selectedProject
+    val taskList = projectUserViewModel.taskList.value
     var selectedTask: Task? by remember { mutableStateOf(null) }
     var showProjectEditDialog by remember { mutableStateOf(false) }
     var showTaskEditDialog by remember { mutableStateOf(false) }
@@ -76,18 +83,18 @@ fun ProjectDetailScreen(
     var onlyShowUser by remember { mutableStateOf(false) }
     var showProjectDeleteDialog by remember { mutableStateOf(false) }
     var showUserAdditionDialog by remember { mutableStateOf(false) }
-
+    val userId = UserSession.userId.collectAsState().value
 
     val filterOptions = TaskFilterOptions(
         projectId = projectId.toString(),
-        userId = "1", //TODO
+        userId = userId.toString(),
         status = status,
         onlyShowUser = onlyShowUser
     )
 
     LaunchedEffect(projectId) {
-        projectViewModel.getProjectById(projectId)
-        projectViewModel.getProjectTasks(projectId)
+        projectUserViewModel.getProjectById(projectId)
+        projectUserViewModel.getProjectTasks(projectId)
     }
 
     Scaffold { paddingValues ->
@@ -116,14 +123,33 @@ fun ProjectDetailScreen(
                     elevation = CardDefaults.cardElevation(6.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = project!!.title,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Row (
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = project!!.title,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            IconButton(
+                                onClick = { showProjectDeleteDialog = true }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete Project",
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            }
+                        }
+
+
                         Text(
                             text = project!!.description,
                             fontSize = 16.sp,
@@ -142,15 +168,47 @@ fun ProjectDetailScreen(
                                 modifier = Modifier.weight(1f)
                             )
 
-                            IconButton(
-                                onClick = { showProjectDeleteDialog = true },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete Project",
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            val totalTasks = taskList.data?.size ?: 0
+                            val completedTasks = taskList.data?.count { it.status == TaskStatus.COMPLETED } ?: 0
+                            val completionPercentage = if (totalTasks > 0) {
+                                (completedTasks.toFloat() / totalTasks.toFloat()) * 100
+                            } else {
+                                0f
+                            }
+
+
+                            if (totalTasks > 0) {
+                                if(totalTasks == completedTasks) {
+                                    Text("All tasks completed")
+                                }
+                                else {
+                                    LinearProgressIndicator(
+                                        progress = { completionPercentage / 100 },
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.4f)
+                                            .height(8.dp),
+                                        color = Color.Green,
+                                        trackColor = Color.Gray,
+                                    )
+                                    Spacer(modifier = Modifier.padding(end = 10.dp))
+                                    Text(
+                                        text = "${completionPercentage.toInt()}%",
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(top = 4.dp)
+                                    )
+                                }
+                            } else {
+                                Text(
+                                    text = "No tasks available",
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
                                 )
                             }
+
+
                         }
                     }
                 }
@@ -175,7 +233,7 @@ fun ProjectDetailScreen(
                             Icon(
                                 imageVector = Icons.Default.SwapHorizontalCircle,
                                 contentDescription = "Edit Project",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                tint = DeepIndigoColor,
                                 modifier = Modifier.size(40.dp)
                             )
                         }
@@ -203,8 +261,9 @@ fun ProjectDetailScreen(
 
                 if (showTaskCreationDialog) {
                     TaskCreationDialog(
+                        userViewModel = userViewModel,
                         onConfirmRequest = { name, description, dueDate, userId ->
-                            projectViewModel.createTask(name,description,dueDate,projectId, userId)
+                            projectUserViewModel.createTask(name,description,dueDate,projectId, userId)
                             showTaskCreationDialog = false
                         },
                         onDismissRequest = { showTaskCreationDialog = false }
@@ -223,7 +282,7 @@ fun ProjectDetailScreen(
                                     status = newFilterOptions.status
                                     onlyShowUser = newFilterOptions.onlyShowUser
                                 },
-                                onSearchClicked = { projectViewModel.getTasks(projectId,status, onlyShowUser) }
+                                onSearchClicked = { projectUserViewModel.getTasks(projectId, userId!! ,status, onlyShowUser) }
                             )
 
                             TaskList(
@@ -285,9 +344,10 @@ fun ProjectDetailScreen(
             if (showTaskEditDialog && selectedTask != null) {
                 TaskEditDialog(
                     task = selectedTask!!,
+                    userViewModel = userViewModel,
                     onDismiss = { showTaskEditDialog = false },
                     onConfirm = { updatedTask ->
-                        projectViewModel.updateTask(updatedTask.copy(), projectId)
+                        projectUserViewModel.updateTask(updatedTask.copy(), projectId)
                         showTaskEditDialog = false
                     }
                 )
@@ -296,25 +356,25 @@ fun ProjectDetailScreen(
             if (showTaskDeleteDialog && taskToDelete != 0.toLong()) {
                 TaskDeleteDialog(
                     onConfirm = {
-                        projectViewModel.deleteTask(taskToDelete,projectId)
+                        projectUserViewModel.deleteTask(taskToDelete,projectId)
                         showTaskDeleteDialog = false
                     },
                     onDismiss = { showTaskDeleteDialog = false }
                 )
             }
 
-            /*
             if (showUserAdditionDialog) {
-                //TODO
-
                 ProjectUserCreationDialog(
-                    projectId = projectId,
-                    projectUserViewModel = projectUserViewModel,
-                    onDismissRequest = { showUserAdditionDialog = false }
+                    userViewModel = userViewModel,
+                    onConfirm = { selectedUserId ->
+                        projectUserViewModel.addUserToProject(projectId,selectedUserId)
+                    },
+                    onDismissRequest = {
+                        showUserAdditionDialog = false
+                    }
                 )
-
             }
-            */
+
 
         }
     }

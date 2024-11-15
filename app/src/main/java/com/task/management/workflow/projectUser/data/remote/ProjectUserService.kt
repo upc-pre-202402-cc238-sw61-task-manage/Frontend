@@ -1,7 +1,7 @@
 package com.task.management.workflow.projectUser.data.remote
 
-import com.task.management.workflow.iam.domain.model.User
-import com.task.management.workflow.project.domain.Project
+import com.task.management.workflow.user.domain.User
+import com.task.management.workflow.project.data.remote.ProjectDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -16,6 +16,11 @@ interface ProjectUserService {
         @Path("projectId") projectId: Long
     ): Response<List<User>>
 
+    @GET("api/v1/project-users/user/{userId}/projects")
+    suspend fun getUserProjects(
+        @Path("userId") userId: Long
+    ): Response<List<ProjectDto>>
+
     @POST("api/v1/project-users/add")
     suspend fun addUserToProject(
         @Body projectUserRequest: ProjectUserRequest
@@ -25,11 +30,6 @@ interface ProjectUserService {
     suspend fun removeUserFromProject(
         @Body projectUserRequest: ProjectUserRequest
     ): Response<Void>
-
-    @GET("api/v1/project-users/user/{userId}/projects/")
-    suspend fun getUserProjects(
-        @Path("userId") userId: Long
-    ): Response<List<Project>>
 
     @DELETE("api/v1/project-users/project/{projectId}/users")
     suspend fun deleteUsersByProjectId(

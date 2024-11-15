@@ -12,7 +12,7 @@ import com.task.management.workflow.iam.data.local.AccountEntity
 import com.task.management.workflow.iam.data.remote.TokenProvider
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.repository.IAMRepository
-import com.task.management.workflow.iam.domain.model.User
+import com.task.management.workflow.user.domain.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -79,9 +79,7 @@ class SignInViewModel(private val repository: IAMRepository, private val tokenPr
                 val user = response.data?.let {
                     User(
                         id = it.id,
-                        username = it.username,
-                        password = password,
-                        token = it.token
+                        username = it.username
                     )
                 }
                 _user.value = UIState(data = user)

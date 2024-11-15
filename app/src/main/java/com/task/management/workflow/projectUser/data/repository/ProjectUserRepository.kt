@@ -1,7 +1,9 @@
 package com.task.management.workflow.projectUser.data.repository
 
 import com.task.management.workflow.common.Resource
-import com.task.management.workflow.iam.domain.model.User
+import com.task.management.workflow.user.domain.User
+import com.task.management.workflow.project.data.remote.ProjectDto
+import com.task.management.workflow.project.data.remote.toProject
 import com.task.management.workflow.project.domain.Project
 import com.task.management.workflow.projectUser.data.remote.ProjectUserRequest
 import com.task.management.workflow.projectUser.data.remote.ProjectUserService
@@ -20,6 +22,23 @@ class ProjectUserRepository(private val projectUserService: ProjectUserService) 
             }
         } catch (e: Exception) {
             return@withContext Resource.Error(message = e.message ?: "An error occurred")
+        }
+    }
+
+    suspend fun getProjectsByUserId(userId: Long): Resource<List<Project>> = withContext(Dispatchers.IO)  {
+        try {
+            val response = projectUserService.getUserProjects(userId)
+            if (response.isSuccessful) {
+                response.body()?.let { projectsDto: List<ProjectDto> ->
+                    val projects = projectsDto.map { projectDto: ProjectDto ->
+                        projectDto.toProject()
+                    }.toList()
+                    return@withContext Resource.Success(data = projects)
+                }
+            }
+            return@withContext Resource.Error(message = "An error occurred")
+        } catch (e: Exception) {
+            return@withContext Resource.Error(message = e.message?: "An error occurred")
         }
     }
 
@@ -44,19 +63,6 @@ class ProjectUserRepository(private val projectUserService: ProjectUserService) 
                 return@withContext Resource.Success(Unit)
             } else {
                 return@withContext Resource.Error("Failed to delete project user: ${response.message()}")
-            }
-        } catch (e: Exception) {
-            return@withContext Resource.Error(e.message ?: "An error occurred")
-        }
-    }
-
-    suspend fun getProjectsByUserId(userId: Long): Resource<List<Project>> = withContext(Dispatchers.IO)  {
-        try {
-            val response = projectUserService.getUserProjects(userId)
-            if (response.isSuccessful) {
-                return@withContext Resource.Success(data = response.body() ?: emptyList())
-            } else {
-                return@withContext Resource.Error("Failed to fetch user projects")
             }
         } catch (e: Exception) {
             return@withContext Resource.Error(e.message ?: "An error occurred")

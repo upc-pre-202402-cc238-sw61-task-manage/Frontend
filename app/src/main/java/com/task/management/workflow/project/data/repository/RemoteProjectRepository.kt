@@ -5,7 +5,6 @@ import com.task.management.workflow.project.data.remote.ProjectDto
 import com.task.management.workflow.project.data.remote.ProjectService
 import com.task.management.workflow.project.data.remote.toProject
 import com.task.management.workflow.project.domain.Project
-import com.task.management.workflow.project.domain.toProjectDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
