@@ -27,13 +27,13 @@ fun NavigationHost(navController: NavHostController, viewModelContainer: ViewMod
         composable(NavigationConstants.SIGN_ACCOUNT_PICKER_PATH) { AccountSelectorScreen(viewModelContainer.signInViewModel, navController) }
         composable(NavigationConstants.SIGN_UP_PATH) { SignUpScreen(viewModelContainer.signUpViewModel, navController) }
         composable(NavigationConstants.CALENDAR_PATH) { CalendarListEventScreen(viewModelContainer.calendarViewModel) }
-        composable(NavigationConstants.PROJECT_LIST_PATH) { ProjectListScreen(viewModelContainer.projectViewModel, navController) }
+        composable(NavigationConstants.PROJECT_LIST_PATH) { ProjectListScreen(viewModelContainer.projectViewModel, viewModelContainer.projectUserViewModel,navController) }
         composable(
             route = "${NavigationConstants.PROJECT_DETAILS_PATH}/{projectId}",
             arguments = listOf(navArgument("projectId") { type = NavType.LongType })
         ) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
-            ProjectDetailScreen(viewModelContainer.projectViewModel, viewModelContainer.projectUserViewModel, navController, projectId)
+            ProjectDetailScreen(viewModelContainer.projectViewModel, viewModelContainer.projectUserViewModel, viewModelContainer.userViewModel,navController, projectId)
         }
         composable(NavigationConstants.PROFILE_PATH) { TeammateView(viewModelContainer.profilesViewModel, navController) }
         composable(NavigationConstants.EDIT_PROFILE_PATH) { EditUserScreen(viewModelContainer.profilesViewModel, navController) }

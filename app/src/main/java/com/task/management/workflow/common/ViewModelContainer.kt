@@ -26,6 +26,9 @@ import com.task.management.workflow.task.data.remote.TaskService
 import com.task.management.workflow.task.data.repository.LocalTaskRepository
 import com.task.management.workflow.task.data.repository.RemoteTaskRepository
 import com.task.management.workflow.task.data.repository.TaskRepository
+import com.task.management.workflow.user.data.remote.UserService
+import com.task.management.workflow.user.data.repository.UserRepository
+import com.task.management.workflow.user.presentation.UserViewModel
 import retrofit2.Retrofit
 
 class ViewModelContainer(context: Context) {
@@ -41,6 +44,7 @@ class ViewModelContainer(context: Context) {
     private val profileService = retrofit.create(ProfileService::class.java)
     private val projectService = retrofit.create(ProjectService::class.java)
     private val projectUserService = retrofit.create(ProjectUserService::class.java)
+    private val userService = retrofit.create(UserService::class.java)
 
     // Repositories
     private val iamRepository = IAMRepository(iamService, dao.getAccountDao())
@@ -59,6 +63,8 @@ class ViewModelContainer(context: Context) {
 
     private val projectUserRepository = ProjectUserRepository(projectUserService)
 
+    private val userRepository = UserRepository(userService)
+
     // ViewModels
     val signInViewModel = SignInViewModel(iamRepository, tokenProvider)
     val signUpViewModel = SignUpViewModel(iamRepository)
@@ -66,6 +72,7 @@ class ViewModelContainer(context: Context) {
     val calendarViewModel = CalendarListEventsViewModel(calendarRepository, taskRepository)
     val profilesViewModel = ProfilesViewModel(profilesRepository, signInViewModel)
     val projectViewModel = ProjectViewModel(projectRepository, taskRepository, projectUserRepository)
-    val projectUserViewModel = ProjectUserViewModel(projectUserRepository)
+    val projectUserViewModel = ProjectUserViewModel(projectUserRepository, taskRepository)
+    val userViewModel = UserViewModel(userRepository)
 
 }

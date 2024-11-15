@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,19 +24,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.task.management.workflow.common.constants.NavigationConstants
+import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.project.domain.Project
 import com.task.management.workflow.project.presentation.ProjectViewModel
 import com.task.management.workflow.project.presentation.dialogs.ProjectCreationDialog
+import com.task.management.workflow.projectUser.presentation.ProjectUserViewModel
 import com.task.management.workflow.ui.theme.DeepIndigoColor
 import com.task.management.workflow.ui.theme.SlateBlueColor
 
 @Composable
-fun ProjectListScreen(viewModel: ProjectViewModel, navController: NavController) {
-    val state = viewModel.state.value
+fun ProjectListScreen(
+    projectViewModel: ProjectViewModel,
+    projectUserViewModel: ProjectUserViewModel,
+    navController: NavController) {
+    val projectsState = projectUserViewModel.userProjects.value
     var showDialog by remember { mutableStateOf(false) }
+    val userId = UserSession.userId.collectAsState().value
 
     LaunchedEffect(Unit) {
-        viewModel.getProjects()
+        if(userId != null){
+            projectUserViewModel.getProjectsByUserId(userId)
+        }
     }
 
     Scaffold { paddingValues ->
@@ -66,10 +75,10 @@ fun ProjectListScreen(viewModel: ProjectViewModel, navController: NavController)
             ) {
                 Text(text = "Create a new project")
             }
-            if (state.isLoading) {
+            if (projectsState.isLoading) {
                 CircularProgressIndicator()
             } else {
-                state.data?.let { projectList: List<Project> ->
+                projectsState.data?.let { projectList: List<Project> ->
                     LazyColumn {
                         items(projectList) { project ->
                             ProjectCard(
@@ -86,8 +95,10 @@ fun ProjectListScreen(viewModel: ProjectViewModel, navController: NavController)
     if (showDialog) {
         ProjectCreationDialog(
             onCreateProject = { name, description, leader ->
-                viewModel.createProject(name, description, leader)
-                viewModel.getProjects()
+                projectViewModel.createProject(name, description, leader)
+                if(userId != null){
+                    projectUserViewModel.getProjectsByUserId(userId)
+                }
             },
             onDismissRequest = { showDialog = false }
         )

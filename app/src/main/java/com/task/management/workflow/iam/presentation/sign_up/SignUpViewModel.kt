@@ -8,7 +8,7 @@ import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
 import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
 import com.task.management.workflow.iam.data.repository.IAMRepository
-import com.task.management.workflow.iam.domain.model.User
+import com.task.management.workflow.user.domain.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -61,9 +61,7 @@ class SignUpViewModel(private val repository: IAMRepository) : ViewModel() {
                 val user = response.data?.let {
                     User(
                         id = it.id,
-                        username = it.username,
-                        password = password,
-                        token = ""
+                        username = it.username
                     )
                 }
                 _user.value = UIState(data = user)

@@ -1,6 +1,7 @@
 package com.task.management.workflow.task.data.remote
 
 import com.google.gson.annotations.SerializedName
+import com.task.management.workflow.task.domain.Task
 import com.task.management.workflow.task.domain.TaskStatus
 
 data class TaskDto(
@@ -14,4 +15,14 @@ data class TaskDto(
     val projectId: Long,
     var userId: Long,
     var status: TaskStatus
-)
+) {
+    fun toTask() = Task(
+        taskId,
+        name,
+        description,
+        dueDate,
+        userId,
+        projectId,
+        status
+    )
+}

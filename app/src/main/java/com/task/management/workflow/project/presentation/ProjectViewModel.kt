@@ -6,15 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.task.management.workflow.common.Resource
 import com.task.management.workflow.common.UIState
-import com.task.management.workflow.common.session.UserSession
 import com.task.management.workflow.project.data.repository.ProjectRepository
 import com.task.management.workflow.project.domain.Project
 import com.task.management.workflow.projectUser.data.repository.ProjectUserRepository
-import com.task.management.workflow.task.data.remote.TaskDto
-import com.task.management.workflow.task.data.remote.toTask
 import com.task.management.workflow.task.data.repository.TaskRepository
 import com.task.management.workflow.task.domain.Task
-import com.task.management.workflow.task.domain.TaskStatus
 import kotlinx.coroutines.launch
 
 class ProjectViewModel(
@@ -27,9 +23,6 @@ class ProjectViewModel(
 
     private val _selectedProject = mutableStateOf<Project?>(null)
     val selectedProject: State<Project?> get() = _selectedProject
-
-    private val _userId = mutableStateOf(UserSession.userId.value ?: 0)
-    val userId: State<Long> get() = _userId
 
     private val _taskList = mutableStateOf(UIState<List<Task>>())
     val taskList: State<UIState<List<Task>>> get() = _taskList
@@ -84,26 +77,13 @@ class ProjectViewModel(
         }
     }
 
-    fun getProjectTasks(projectId: Long, status: String? = null) {
-        _taskList.value = UIState(isLoading = true)
-        viewModelScope.launch {
-            val result = taskRepository.getTasksByProjectAndStatusRemotely(projectId, status)
-            if (result is Resource.Success && !result.data.isNullOrEmpty()) {
-                _taskList.value = UIState(data = result.data)
-            } else {
-                _taskList.value = UIState(error = "No tasks found or an error occurred")
-            }
-        }
-    }
-
-    fun getTasks(projectId: Long, status: String, onlyShowUser: Boolean){
+    fun getTasks(projectId: Long, userId: Long, status: String, onlyShowUser: Boolean){
         if(onlyShowUser) {
             if(status == defaultStatusState) {
-                // pass the user id from UserSession
-                getTasksFromProjectWithUserId(projectId, userId.value)
+                getTasksFromProjectWithUserId(projectId, userId)
             }
             else {
-                getTasksFromProjectWithUserId(projectId,1, status)
+                getTasksFromProjectWithUserId(projectId,userId, status)
             }
         }
         else {
@@ -137,6 +117,9 @@ class ProjectViewModel(
         fetchTasks { taskRepository.getTasksByProjectAndUserAndStatusRemotely(projectId, userId, status) }
     }
 
+}
+
+/*
     fun createTask(name: String, description: String, dueDate: String, projectId: Long, userId: Long){
         _taskList.value = UIState(isLoading = true)
         viewModelScope.launch {
@@ -156,29 +139,31 @@ class ProjectViewModel(
             }
         }
     }
+     */
 
-    fun updateTask(updatedTask: Task, projectId: Long) {
-       _taskList.value = UIState(isLoading = true)
-       viewModelScope.launch {
-           val result = taskRepository.updateRemotely(updatedTask)
-           if(result is Resource.Success){
-               getProjectTasks(projectId)
-           } else {
-               _taskList.value = UIState(error = result.message ?: "An error occurred")
-           }
+/*
+fun updateTask(updatedTask: Task, projectId: Long) {
+   _taskList.value = UIState(isLoading = true)
+   viewModelScope.launch {
+       val result = taskRepository.updateRemotely(updatedTask)
+       if(result is Resource.Success){
+           getProjectTasks(projectId)
+       } else {
+           _taskList.value = UIState(error = result.message ?: "An error occurred")
        }
-    }
+   }
+}
 
-    fun deleteTask(taskId: Long, projectId: Long){
-        _taskList.value = UIState(isLoading = true)
-        viewModelScope.launch {
-            val result = taskRepository.deleteRemotely(taskId)
-            if(result is Resource.Success){
-                getProjectTasks(projectId)
-            } else {
-                _taskList.value = UIState(error = result.message ?: "An error occurred")
-            }
+fun deleteTask(taskId: Long, projectId: Long){
+    _taskList.value = UIState(isLoading = true)
+    viewModelScope.launch {
+        val result = taskRepository.deleteRemotely(taskId)
+        if(result is Resource.Success){
+            getProjectTasks(projectId)
+        } else {
+            _taskList.value = UIState(error = result.message ?: "An error occurred")
         }
     }
-
 }
+
+ */
