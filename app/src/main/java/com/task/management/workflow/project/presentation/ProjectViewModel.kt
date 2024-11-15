@@ -1,6 +1,7 @@
 package com.task.management.workflow.project.presentation
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,8 +22,8 @@ class ProjectViewModel(
     private val _state = mutableStateOf(UIState<List<Project>>())
     val state: State<UIState<List<Project>>> get() = _state
 
-    private val _selectedProject = mutableStateOf<Project?>(null)
-    val selectedProject: State<Project?> get() = _selectedProject
+    private val _selectedProjectId = mutableLongStateOf(1)
+    val selectedProjectId: State<Long> get() = _selectedProjectId
 
     private val _taskList = mutableStateOf(UIState<List<Task>>())
     val taskList: State<UIState<List<Task>>> get() = _taskList
@@ -47,25 +48,23 @@ class ProjectViewModel(
         }
     }
 
-    fun getProjectById(projectId: Long) {
-        _selectedProject.value = _state.value.data?.find { it.projectId == projectId }
-    }
 
-    fun createProject(newTitle: String, newDescription: String, newLeader: String ) {
+    fun createProject(newTitle: String, newDescription: String, newLeader: String, onComplete: (Long?) -> Unit){
         viewModelScope.launch {
             val newProject = Project(
                 title = newTitle,
                 description = newDescription,
                 leader = newLeader
             )
-            repository.insertRemotely(newProject)
+            val result = repository.insertRemotely(newProject)
+            val projectId = result.data?.projectId
+            onComplete(projectId)
         }
     }
 
     fun updateProject(project: Project) {
         viewModelScope.launch {
             repository.updateRemotely(project)
-            _selectedProject.value = project
         }
     }
 
@@ -118,52 +117,3 @@ class ProjectViewModel(
     }
 
 }
-
-/*
-    fun createTask(name: String, description: String, dueDate: String, projectId: Long, userId: Long){
-        _taskList.value = UIState(isLoading = true)
-        viewModelScope.launch {
-            val newTask = TaskDto(
-                name = name,
-                description = description,
-                dueDate = dueDate,
-                projectId = projectId,
-                userId = userId,
-                status = TaskStatus.NEW
-            )
-            val result = taskRepository.insertRemotely(newTask.toTask())
-            if (result is Resource.Success){
-                getProjectTasks(projectId)
-            } else {
-                _taskList.value = UIState(error = result.message ?: "An error occurred")
-            }
-        }
-    }
-     */
-
-/*
-fun updateTask(updatedTask: Task, projectId: Long) {
-   _taskList.value = UIState(isLoading = true)
-   viewModelScope.launch {
-       val result = taskRepository.updateRemotely(updatedTask)
-       if(result is Resource.Success){
-           getProjectTasks(projectId)
-       } else {
-           _taskList.value = UIState(error = result.message ?: "An error occurred")
-       }
-   }
-}
-
-fun deleteTask(taskId: Long, projectId: Long){
-    _taskList.value = UIState(isLoading = true)
-    viewModelScope.launch {
-        val result = taskRepository.deleteRemotely(taskId)
-        if(result is Resource.Success){
-            getProjectTasks(projectId)
-        } else {
-            _taskList.value = UIState(error = result.message ?: "An error occurred")
-        }
-    }
-}
-
- */

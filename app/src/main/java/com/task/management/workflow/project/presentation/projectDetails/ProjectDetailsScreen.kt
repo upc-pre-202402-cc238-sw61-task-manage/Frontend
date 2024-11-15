@@ -96,6 +96,11 @@ fun ProjectDetailScreen(
         projectUserViewModel.getProjectById(projectId)
         projectUserViewModel.getProjectTasks(projectId)
     }
+    LaunchedEffect(projectUserViewModel.isUserListUpdated.value) {
+        if (projectUserViewModel.isUserListUpdated.value) {
+            projectUserViewModel.getUsersByProjectId(projectId)
+        }
+    }
 
     Scaffold { paddingValues ->
         Column(

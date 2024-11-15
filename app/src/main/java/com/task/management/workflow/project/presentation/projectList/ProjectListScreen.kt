@@ -40,10 +40,14 @@ fun ProjectListScreen(
     val projectsState = projectUserViewModel.userProjects.value
     var showDialog by remember { mutableStateOf(false) }
     val userId = UserSession.userId.collectAsState().value
-
     LaunchedEffect(Unit) {
         if(userId != null){
             projectUserViewModel.getProjectsByUserId(userId)
+        }
+    }
+    LaunchedEffect(projectUserViewModel.isProjectListUpdated.value) {
+        if (projectUserViewModel.isProjectListUpdated.value) {
+            projectUserViewModel.getProjectsByUserId(userId!!)
         }
     }
 
@@ -95,9 +99,12 @@ fun ProjectListScreen(
     if (showDialog) {
         ProjectCreationDialog(
             onCreateProject = { name, description, leader ->
-                projectViewModel.createProject(name, description, leader)
-                if(userId != null){
-                    projectUserViewModel.getProjectsByUserId(userId)
+                showDialog = false
+                projectViewModel.createProject(name, description, leader) { projectId ->
+                    if (projectId != null && userId != null) {
+                        projectUserViewModel.addUserToProject(projectId, userId)
+                        projectUserViewModel.getProjectsByUserId(userId)
+                    }
                 }
             },
             onDismissRequest = { showDialog = false }

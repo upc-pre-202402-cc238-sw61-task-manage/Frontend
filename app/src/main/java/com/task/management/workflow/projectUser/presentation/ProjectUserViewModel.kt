@@ -36,6 +36,12 @@ class ProjectUserViewModel(
     private val _taskList = mutableStateOf(UIState<List<Task>>())
     val taskList: State<UIState<List<Task>>> get() = _taskList
 
+    private val _isProjectListUpdated = mutableStateOf(false)
+    val isProjectListUpdated: State<Boolean> get() = _isProjectListUpdated
+
+    private val _isUserListUpdated = mutableStateOf(false)
+    val isUserListUpdated: State<Boolean> get() = _isUserListUpdated
+
     private var defaultStatusState = "ALL"
 
     fun getUsersByProjectId(projectId: Long) {
@@ -46,6 +52,7 @@ class ProjectUserViewModel(
             } else {
                 _projectUsers.value = emptyList()
             }
+            _isUserListUpdated.value = false
         }
     }
 
@@ -59,6 +66,7 @@ class ProjectUserViewModel(
                 _userProjects.value = UIState(error = "An error occurred")
             }
         }
+        _isProjectListUpdated.value = false
     }
 
     fun getProjectById(projectId: Long){
@@ -125,7 +133,8 @@ class ProjectUserViewModel(
     fun addUserToProject(projectId: Long, userId: Long) {
         viewModelScope.launch {
             projectUserRepository.addUserToProject(projectId, userId)
-            getUsersByProjectId(projectId)
+            _isProjectListUpdated.value = true
+            _isUserListUpdated.value = true
         }
     }
 
