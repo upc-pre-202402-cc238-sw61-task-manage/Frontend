@@ -120,7 +120,9 @@ fun EditUserScreen(
                                     firstName = name,
                                     lastName = "",
                                     email = "",
-                                    phoneNumber = phone
+                                    phoneNumber = phone,
+                                    profilePhoto = "",
+
                                 )
                             )
                             navController.popBackStack()

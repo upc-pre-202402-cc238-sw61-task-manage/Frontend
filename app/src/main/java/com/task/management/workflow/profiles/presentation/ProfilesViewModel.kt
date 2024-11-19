@@ -45,7 +45,8 @@ class ProfilesViewModel(val profilesRepository: ProfileRepository, val signInVie
                     firstName = it.firstName,
                     lastName = it.lastName,
                     email = it.email,
-                    phoneNumber = it.phoneNumber
+                    phoneNumber = it.phoneNumber,
+                    profilePhoto = it.profilePhoto
                 )
             })
             else -> UIState(error = "Unexpected response type")

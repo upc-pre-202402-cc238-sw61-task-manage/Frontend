@@ -44,7 +44,7 @@ fun TeammateView(profilesViewModel: ProfilesViewModel, navController: NavControl
             )
         }
         TeammateCard(
-            imageUrl = "https://www.pngall.com/wp-content/uploads/5/Profile.png", // URL temporal para la imagen
+            imageUrl = profile.value.data?.profilePhoto ?: "https://www.pngall.com/wp-content/uploads/5/Profile.png",
             firstName = profile.value.data?.firstName ?: "First Name",
             lastName = profile.value.data?.lastName ?: "Last Name",
             email = profile.value.data?.email ?: "Email",
