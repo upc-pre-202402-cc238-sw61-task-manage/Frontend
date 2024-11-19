@@ -6,6 +6,7 @@ import com.task.management.workflow.common.Resource
 import com.task.management.workflow.iam.data.local.AccountDao
 import com.task.management.workflow.iam.data.local.AccountEntity
 import com.task.management.workflow.iam.data.remote.IAMService
+import com.task.management.workflow.iam.data.remote.UserResponse
 import com.task.management.workflow.iam.data.remote.signin.SignInRequest
 import com.task.management.workflow.iam.data.remote.signin.SignInResponse
 import com.task.management.workflow.iam.data.remote.signup.SignUpRequest
@@ -86,6 +87,16 @@ class IAMRepository(
     suspend fun signUp(signUpRequest: SignUpRequest): Resource<SignUpResponse> {
         return try {
             val response = service.signUp(signUpRequest)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "An error occurred")
+        }
+    }
+
+    suspend fun getUserById(id: Long): Resource<UserResponse> {
+        return try {
+            val response = service.getUserById(id)
+            Log.d("IAMRepository", "User: ${response.body()?.username}")
             handleResponse(response)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "An error occurred")

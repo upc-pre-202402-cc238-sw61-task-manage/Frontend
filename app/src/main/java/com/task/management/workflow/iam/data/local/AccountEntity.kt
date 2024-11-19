@@ -13,4 +13,6 @@ data class AccountEntity (
     val username: String,
     @ColumnInfo("account_password")
     val password: String,
+    @ColumnInfo("jwt_token")
+    val jwtToken: String
 )

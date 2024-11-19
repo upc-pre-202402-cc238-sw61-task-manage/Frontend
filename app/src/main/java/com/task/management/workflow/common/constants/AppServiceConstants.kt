@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object AppServiceConstants {
-    private val tokenProvider = TokenProvider()
+    private val tokenProvider = TokenProvider
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor(tokenProvider))
         .build()
