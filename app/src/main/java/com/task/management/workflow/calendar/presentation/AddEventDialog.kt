@@ -34,6 +34,8 @@ fun AddEventDialog(onDismiss: () -> Unit, onConfirm: (String, String, String) ->
         duedate = String.format("%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
     }
 
+    val today = Calendar.getInstance()
+
     // Mostrar el DatePickerDialog cuando se pulsa el botón
     val context = LocalContext.current
     val datePickerDialog = DatePickerDialog(
@@ -47,7 +49,9 @@ fun AddEventDialog(onDismiss: () -> Unit, onConfirm: (String, String, String) ->
         selectedYear,
         selectedMonth,
         selectedDay
-    )
+    ).apply {
+        datePicker.minDate = today.timeInMillis
+    }
 
     AlertDialog(
         onDismissRequest = { onDismiss() },

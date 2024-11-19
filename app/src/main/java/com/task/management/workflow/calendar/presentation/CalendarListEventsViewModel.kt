@@ -64,9 +64,10 @@ class CalendarListEventsViewModel(private val repository: CalendarRepository, pr
                 _events.value = UIState(error = result.message?:"An error occurred")
             }
         }
+
     }
 
-    private fun getTasksPackages(){
+    fun getTasksPackages(){
         _tasks.value = UIState(isLoading = true)
         viewModelScope.launch {
             val result = repository2.getTasksByUserIdRemotely(userId.value)

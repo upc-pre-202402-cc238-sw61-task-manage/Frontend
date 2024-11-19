@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,8 +58,6 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
 
     val events = viewModel.events.value
     val color = Color(25, 23, 89)
-    //TODO: Delete unused code
-    //var userIdInput by remember { mutableStateOf(TextFieldValue(userId.toString())) }
 
     var showDialogAddEvent by remember { mutableStateOf(false) }
     var showDialogDeleteEvent by remember { mutableStateOf(false) }
@@ -80,8 +79,6 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
         firstVisibleMonth = currentMonth,
         firstDayOfWeek = daysOfWeek.first()
     )
-
-
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialogAddEvent = true }) {
@@ -97,20 +94,8 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
 
             LaunchedEffect(Unit) {
                 viewModel.getEventsPackages()
+                viewModel.getTasksPackages()
             }
-
-            //TODO: Delete unused code
-            /*TextField(
-                modifier = Modifier.width(80.dp),
-                value = userIdInput,
-                onValueChange = {
-                    userIdInput = it
-                    val newUserId = it.text.toIntOrNull() ?: 0
-                    viewModel.onUserIdChanged(newUserId)
-                },
-                label = { Text("User ID") }
-            )*/
-
             //Calendario
             var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
             HorizontalCalendar(
@@ -141,8 +126,6 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                     DaysOfWeekTitle(daysOfWeek = daysOfWeek)// Use the title as month header
                 }
             )
-
-
             Text(
                 modifier = Modifier.padding(horizontal = 30.dp),
                 text = "Lista de eventos",
@@ -161,47 +144,59 @@ fun CalendarListEventScreen(viewModel: CalendarListEventsViewModel) {
                             .padding(horizontal = 30.dp)
                             .weight(1f)
                     ) {
-
                         items(events.data ?: emptyList()) { event ->
-                            Column(
+                            Card(
                                 modifier = Modifier
                                     .padding(vertical = 8.dp)
                                     .fillMaxWidth()
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(text = event.title, fontSize = 16.sp, color = color, fontWeight = FontWeight.Bold)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    IconButton(onClick = {
+                                    .clickable {
                                         eventToEdit = event
                                         showDialogEditEvent = true
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Edit,
-                                            tint = Color.Blue,
-                                            contentDescription = "Editar evento"
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    IconButton(onClick = {
-                                        eventToDelete = event
-                                        showDialogDeleteEvent = true}) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Delete,
-                                            tint = Color.Red,
-                                            contentDescription = "Eliminar evento"
-                                        )
-                                    }
-
-                                }
-
-                                Text(text = event.dueDate, color = color)
-                                Text(
-                                    text = event.description,
-                                    fontSize = 15.sp,
-                                    color = color,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
+                                    },
+                                elevation = CardDefaults.cardElevation(4.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(240, 240, 240) // Fondo para Material Design 3
                                 )
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = event.title,
+                                            fontSize = 18.sp,
+                                            color = Color(25, 23, 89), // Color principal
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.weight(1f)) // Espacio flexible para empujar los íconos a la derecha
+                                        IconButton(onClick = {
+                                            eventToDelete = event
+                                            showDialogDeleteEvent = true
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Delete,
+                                                tint = Color.Red,
+                                                contentDescription = "Eliminar evento"
+                                            )
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = event.dueDate,
+                                        color = Color.Gray,
+                                        fontSize = 14.sp
+                                    )
+                                    Text(
+                                        text = event.description,
+                                        fontSize = 14.sp,
+                                        color = Color.DarkGray,
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             }
                         }
                     }
