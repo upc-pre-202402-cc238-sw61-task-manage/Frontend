@@ -5,4 +5,5 @@ data class Profile(
     val lastName: String,
     val email : String,
     val phoneNumber : String,
+    val profilePhoto : String,
 )

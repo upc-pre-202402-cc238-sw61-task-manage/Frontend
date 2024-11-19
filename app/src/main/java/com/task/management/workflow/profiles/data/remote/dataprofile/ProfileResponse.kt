@@ -6,5 +6,6 @@ data class ProfileResponse(
     val lastName: String,
     val email: String,
     val phoneNumber: String,
-    val userId: Long
+    val userId: Long,
+    val profilePhoto : String,
 )
